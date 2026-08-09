@@ -6,6 +6,7 @@ import { emailOTP, username } from "better-auth/plugins";
 import { prismaAdapter } from "better-auth/adapters/prisma";
 import VerificationEmail from "@/src/shared/Emails/VerificationEmail";
 import SendVerificationOtp from "@/src/shared/Emails/SendVerificationOtp";
+import { Roles } from "@/prisma/generated/enums";
 
 export const auth = betterAuth({
   baseURL: process.env.BETTER_AUTH_URL,
@@ -64,6 +65,16 @@ export const auth = betterAuth({
       clientSecret: process.env.GITHUB_CLIENT_SECRET as string,
     },
   },
+  user: {
+    additionalFields: {
+      role: {
+        type: "string",
+        required: true,
+        defaultValue: Roles,
+        input: false,
+      },
+    },
+  },
   plugins: [
     username({
       minUsernameLength: 5,
@@ -102,11 +113,6 @@ export const auth = betterAuth({
   session: {
     expiresIn: 60 * 60 * 24 * 30,
     updateAge: 60 * 60 * 24,
-    cookieCache: {
-      enabled: true,
-      strategy: "jwt",
-      maxAge: 7 * 24 * 60 * 60,
-    },
   },
   account: {
     storeAccountCookie: true,
