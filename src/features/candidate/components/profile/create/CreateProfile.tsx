@@ -12,7 +12,7 @@ import { Input } from "@/src/shared/ui/input";
 import {
   AddProfileSchema,
   AddProfileSchemaType,
-} from "@/src/features/candidate/schemas/ProfileSchema";
+} from "@/src/features/candidate/schemas/AddProfileSchema";
 import { Button } from "@/src/shared/ui/button";
 import { useForm } from "react-hook-form";
 import { Textarea } from "@/src/shared/ui/textarea";

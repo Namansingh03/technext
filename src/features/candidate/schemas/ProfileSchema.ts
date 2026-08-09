@@ -1,34 +1,97 @@
-import { z } from "zod";
+import z from "zod";
 
-const linkSchema = z.object({
-  label: z
+const TellUsMoreSchema = z.object({
+  image: z.instanceof(File).optional(),
+  role: z.enum(["candidate", "admin"]),
+  headline: z.string().max(20).min(1, "Specialization is required").trim(),
+  location: z.string(),
+  bio: z
     .string()
-    .trim()
-    .min(1, "Label is required")
-    .max(50, "Label too long"),
+    .max(100, "Only 200 characters are allowed")
+    .min(1, "Bio is required"),
+});
 
-  url: z
+const profileHeaderSchema = z.object({
+  displayName: z.string().min(2, "Name must be at least 2 characters").max(50),
+
+  headline: z
     .string()
-    .trim()
+    .max(120, "Headline too long")
     .optional()
-    .or(z.literal("")) // allow empty input
-    .refine((val) => !val || /^https?:\/\/.+/.test(val), "Invalid URL"),
+    .or(z.literal("")),
+
+  location: z.string().max(80).optional().or(z.literal("")),
+
+  isAvailable: z.boolean(),
+
+  avatar: z
+    .instanceof(File)
+    .optional()
+    .refine((file) => !file || file.size <= 2 * 1024 * 1024, {
+      message: "Avatar must be under 2MB",
+    })
+    .refine((file) => !file || file.type.startsWith("image/"), {
+      message: "Avatar must be an image",
+    }),
+
+  banner: z
+    .instanceof(File)
+    .optional()
+    .refine((file) => !file || file.size <= 5 * 1024 * 1024, {
+      message: "Banner must be under 5MB",
+    })
+    .refine((file) => !file || file.type.startsWith("image/"), {
+      message: "Banner must be an image",
+    }),
 });
 
-const AddProfileSchema = z.object({
-  bannerImage: z.instanceof(File).optional(),
-
-  skills: z
-    .array(z.string().min(1, "Skill cannot be empty"))
-    .min(1, "At least one skill is required")
-    .max(15, "Maximum 15 skills allowed"),
-
-  about: z.string().max(500, "About section must be under 500 characters"),
-
-  links: z.array(linkSchema).max(4, "Maximum 5 links allowed").optional(),
+const educationSchema = z.object({
+  school: z.string().min(2),
+  degree: z.string().min(2),
+  field: z.string().min(2),
+  startDate: z.date(),
+  endDate: z.date().optional().nullable(),
+  isCurrent: z.boolean(),
 });
 
-export type AddProfileSchemaType = z.infer<typeof AddProfileSchema>;
-export type linkSchemaType = z.infer<typeof linkSchema>;
+const experienceSchema = z
+  .object({
+    company: z.string().min(2, "Company is required"),
+    title: z.string().min(2, "Title is required"),
 
-export { AddProfileSchema, linkSchema };
+    location: z.string().optional().or(z.literal("")),
+
+    startDate: z.date(),
+
+    endDate: z.date().optional().nullable(),
+
+    isCurrent: z.boolean(),
+
+    description: z
+      .string()
+      .max(200, "Maximum 200 characters")
+      .optional()
+      .or(z.literal("")),
+  })
+  .refine(
+    (data) => {
+      if (!data.isCurrent && !data.endDate) return false;
+      return true;
+    },
+    {
+      message: "End date is required if not currently working",
+      path: ["endDate"],
+    },
+  );
+
+export {
+  profileHeaderSchema,
+  educationSchema,
+  experienceSchema,
+  TellUsMoreSchema,
+};
+
+export type TellUsMoreSchemaInput = z.infer<typeof TellUsMoreSchema>;
+export type ProfileHeaderInput = z.infer<typeof profileHeaderSchema>;
+export type EducationSchemaType = z.input<typeof educationSchema>;
+export type ExperienceSchemaType = z.input<typeof experienceSchema>;
