@@ -70,7 +70,7 @@ export function SignupForm({
       {...props}
     >
       {/* Card */}
-      <div className="bg-white border border-stone-200 rounded-2xl p-8 shadow-sm">
+      <div className="bg-neutral-100 border border-stone-200 rounded-2xl p-8 shadow-sm">
         {/* Brand */}
         <div className="flex items-center gap-2 mb-8">
           <div className="w-2 h-2 rounded-full bg-foreground" />

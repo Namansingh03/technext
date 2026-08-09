@@ -75,7 +75,7 @@ export function SignInForm({
       className={cn("flex flex-col gap-6 w-full max-w-md mx-auto", className)}
       {...props}
     >
-      <div className="bg-white border border-stone-200 rounded-2xl p-8 shadow-sm">
+      <div className=" border border-stone-200 rounded-2xl p-8 shadow-sm">
         <div className="flex items-center gap-2 mb-8">
           <div className="w-2 h-2 rounded-full bg-foreground" />
           <span className="font-serif text-lg tracking-tight">Talentgate</span>
