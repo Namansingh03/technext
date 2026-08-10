@@ -7,7 +7,7 @@ const TellUsMoreSchema = z.object({
   location: z.string(),
   bio: z
     .string()
-    .max(100, "Only 200 characters are allowed")
+    .max(300, "Only 300 characters are allowed")
     .min(1, "Bio is required"),
 });
 

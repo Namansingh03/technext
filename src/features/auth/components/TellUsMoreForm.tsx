@@ -114,7 +114,7 @@ const TellUsAboutYourself = ({ username }: { username: string }) => {
       }
       if (intent === "admin") {
         toast.success(res.message, { description: "now create a company" });
-        router.push("/createCompany");
+        router.push("/create-company");
       } else {
         toast.success(res.message, { description: formattedDate });
         router.push(`/user/${username}/profile/create`);
@@ -128,7 +128,9 @@ const TellUsAboutYourself = ({ username }: { username: string }) => {
         <div
           key={i}
           className={`rounded-full transition-all duration-300 ${
-            i + 1 === current ? "w-6 h-2 bg-zinc-900" : "w-2 h-2 bg-zinc-300"
+            i + 1 === current
+              ? "w-6 h-2 bg-zinc-900 dark:bg-zinc-100"
+              : "w-2 h-2 bg-zinc-300 dark:bg-zinc-700"
           }`}
         />
       ))}
@@ -136,19 +138,19 @@ const TellUsAboutYourself = ({ username }: { username: string }) => {
   );
 
   return (
-    <div className="w-full max-w-xl bg-white rounded-2xl shadow-lg border border-zinc-100 overflow-hidden">
+    <div className="w-full max-w-xl dark:bg-neutral-900 dark:border-neutral-800 bg-white rounded-2xl shadow-lg border border-zinc-100 overflow-hidden">
       {/* Header */}
-      <div className="px-8 pt-8 pb-5 border-b border-zinc-100">
+      <div className="px-8 pt-8 pb-5 dark:bg-neutral-900 dark:border-neutral-800 border-b border-zinc-100">
         <div className="flex items-center justify-between mb-1">
-          <h1 className="text-lg font-semibold tracking-tight text-zinc-900 font-serif">
+          <h1 className="text-lg dark:text-neutral-100 font-semibold tracking-tight text-zinc-900 font-serif">
             TalentGate
           </h1>
           {/* Step counter text */}
-          <span className="text-xs text-zinc-400">
+          <span className="text-xs dark:text-neutral-500 text-zinc-400">
             Step {current} of {count}
           </span>
         </div>
-        <p className="text-sm text-zinc-500 mb-5">
+        <p className="text-sm text-zinc-500 dark:text-neutral-400 mb-5">
           Tell us about yourself to personalize your experience.
         </p>
 
@@ -163,10 +165,10 @@ const TellUsAboutYourself = ({ username }: { username: string }) => {
               {/* STEP 0: ROLE */}
               <CarouselItem>
                 <div className="flex flex-col gap-y-1 mb-3">
-                  <label className="text-sm font-medium text-zinc-700">
+                  <label className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
                     I am
                   </label>
-                  <p className="text-xs text-zinc-400">
+                  <p className="text-xs text-zinc-400 dark:text-zinc-500">
                     Tell us what you are here for.
                   </p>
                 </div>
@@ -191,10 +193,10 @@ const TellUsAboutYourself = ({ username }: { username: string }) => {
 
               <CarouselItem>
                 <div className="flex flex-col gap-y-1 mb-3">
-                  <label className="text-sm font-medium text-zinc-700">
+                  <label className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
                     Avatar image
                   </label>
-                  <p className="text-xs text-zinc-400">
+                  <p className="text-xs text-zinc-400 dark:text-zinc-500">
                     Make you identity go unnoticed.
                   </p>
                 </div>
@@ -208,8 +210,8 @@ const TellUsAboutYourself = ({ username }: { username: string }) => {
                       className="rounded-full w-50 h-50 object-cover my-3"
                     />
                   ) : (
-                    <div className="w-40 h-40 rounded-full border-4 border-gray-800 my-3 flex items-center p-5 justify-center">
-                      <User2 className="w-full h-full text-gray-800" />
+                    <div className="w-40 h-40 rounded-full border-4 border-gray-800 dark:border-gray-300 my-3 flex items-center p-5 justify-center">
+                      <User2 className="w-full h-full text-gray-800 dark:text-gray-300" />
                     </div>
                   )}
                   <Input
@@ -219,7 +221,9 @@ const TellUsAboutYourself = ({ username }: { username: string }) => {
                   />
                 </div>
                 {errors.image && (
-                  <p className="text-red-400">{errors.image.message}</p>
+                  <p className="text-red-400 dark:text-red-400">
+                    {errors.image.message}
+                  </p>
                 )}
                 <div className="w-full flex items-end justify-between mt-10">
                   <Button type="button" onClick={prev}>
@@ -234,10 +238,10 @@ const TellUsAboutYourself = ({ username }: { username: string }) => {
               {/* STEP 1: HEADLINE */}
               <CarouselItem className="flex flex-col gap-y-4">
                 <div className="flex flex-col gap-y-1">
-                  <label className="text-sm font-medium text-zinc-700">
+                  <label className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
                     What are your specializations?
                   </label>
-                  <p className="text-xs text-zinc-400">
+                  <p className="text-xs text-zinc-400 dark:text-zinc-500">
                     What defines you best.
                   </p>
                 </div>
@@ -247,7 +251,7 @@ const TellUsAboutYourself = ({ username }: { username: string }) => {
                   {...register("headline")}
                 />
                 {errors.headline && (
-                  <p className="text-red-500 text-xs">
+                  <p className="text-red-500 dark:text-red-400 text-xs">
                     {errors.headline.message}
                   </p>
                 )}
@@ -264,14 +268,16 @@ const TellUsAboutYourself = ({ username }: { username: string }) => {
               {/* STEP 2: LOCATION */}
               <CarouselItem className="flex flex-col gap-y-4">
                 <div className="flex flex-col gap-y-1">
-                  <label className="text-sm font-medium text-zinc-700">
+                  <label className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
                     Location
                   </label>
-                  <p className="text-xs text-zinc-400">Your office location.</p>
+                  <p className="text-xs text-zinc-400 dark:text-zinc-500">
+                    Your office location.
+                  </p>
                 </div>
                 <Input placeholder="city, country" {...register("location")} />
                 {errors.location && (
-                  <p className="text-red-500 text-xs">
+                  <p className="text-red-500 dark:text-red-400 text-xs">
                     {errors.location.message}
                   </p>
                 )}
@@ -289,21 +295,23 @@ const TellUsAboutYourself = ({ username }: { username: string }) => {
               {/* STEP 3: BIO */}
               <CarouselItem className="flex flex-col gap-y-4">
                 <div className="flex flex-col gap-y-1">
-                  <label className="text-sm font-medium text-zinc-700">
+                  <label className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
                     Your short bio
                   </label>
-                  <p className="text-xs text-zinc-400">
+                  <p className="text-xs text-zinc-400 dark:text-zinc-500">
                     A one-liner that captures who you are professionally.
                   </p>
                 </div>
                 <Textarea
                   rows={3}
                   placeholder="Full-stack engineer who loves building products people care about."
-                  className="bg-zinc-50 border-zinc-200 focus:bg-white resize-none transition-colors text-sm"
+                  className="bg-zinc-50 dark:bg-neutral-800 border-zinc-200 dark:border-neutral-700 focus:bg-white dark:focus:bg-neutral-800 resize-none transition-colors text-sm"
                   {...register("bio")}
                 />
                 {errors.bio && (
-                  <p className="text-red-500 text-xs">{errors.bio.message}</p>
+                  <p className="text-red-500 dark:text-red-400 text-xs">
+                    {errors.bio.message}
+                  </p>
                 )}
                 <div className="flex justify-between pt-2">
                   <Button type="button" onClick={prev}>
@@ -313,7 +321,7 @@ const TellUsAboutYourself = ({ username }: { username: string }) => {
                   <Button
                     type="submit"
                     disabled={isPending}
-                    className="px-6 bg-zinc-900 hover:bg-zinc-700"
+                    className="px-6 bg-zinc-900 hover:bg-zinc-700 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-300"
                   >
                     {isPending ? (
                       <Loader2 className="animate-spin" />

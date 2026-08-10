@@ -36,7 +36,7 @@ export async function createUser(data: TellUsMoreSchemaType) {
         headline: data.headline,
         bio: data.bio,
         location: data.location,
-        role: data.role as Roles,
+        role: data.role.toUpperCase() as Roles,
 
         ...(imageUrl && {
           image: imageUrl,

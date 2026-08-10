@@ -28,6 +28,7 @@ export function SignupForm({
     register,
     handleSubmit,
     formState: { errors },
+    reset,
   } = useForm<SignUpSchemaType>({
     resolver: zodResolver(SignUpSchema),
     defaultValues: {
@@ -51,9 +52,13 @@ export function SignupForm({
       });
 
       if (error) {
-        console.log("signup error : ", error.message);
-        setServerError(error.message ?? "Something went wrong");
-        return;
+        setServerError(error.message || error.code || "Something went wrong");
+        reset({
+          confirmPassword: "",
+          email: "",
+          name: "",
+          password: "",
+        });
       }
 
       toast.success("Account created! Please verify your email.", {
@@ -66,11 +71,11 @@ export function SignupForm({
 
   return (
     <div
-      className={cn("flex flex-col gap-6 w-full max-w-md mx-auto", className)}
+      className={cn("flex flex-col gap-6 w-full max-w-md mx-auto 0", className)}
       {...props}
     >
       {/* Card */}
-      <div className="bg-neutral-100 border border-stone-200 rounded-2xl p-8 shadow-sm">
+      <div className="bg-neutral-100 border border-stone-200 dark:bg-neutral-900 dark:border-neutral-80 rounded-2xl p-8 shadow-sm">
         {/* Brand */}
         <div className="flex items-center gap-2 mb-8">
           <div className="w-2 h-2 rounded-full bg-foreground" />

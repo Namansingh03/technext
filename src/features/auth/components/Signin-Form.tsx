@@ -75,7 +75,7 @@ export function SignInForm({
       className={cn("flex flex-col gap-6 w-full max-w-md mx-auto", className)}
       {...props}
     >
-      <div className=" border border-stone-200 rounded-2xl p-8 shadow-sm">
+      <div className="bg-white dark:bg-neutral-900 border border-stone-200 dark:border-neutral-800 rounded-2xl p-8 shadow-sm">
         <div className="flex items-center gap-2 mb-8">
           <div className="w-2 h-2 rounded-full bg-foreground" />
           <span className="font-serif text-lg tracking-tight">Talentgate</span>
@@ -99,7 +99,9 @@ export function SignInForm({
               type="email"
               placeholder="you@example.com"
               {...register("email")}
-              className={cn(errors.email && "border-destructive")}
+              className={cn(
+                errors.email && "border-destructive dark:border-destructive",
+              )}
             />
             {errors.email && (
               <p className="text-xs text-destructive">{errors.email.message}</p>
@@ -114,7 +116,7 @@ export function SignInForm({
               <button
                 type="button"
                 onClick={onResetPassword}
-                className="text-xs text-muted-foreground hover:text-foreground"
+                className="text-xs text-muted-foreground hover:text-foreground dark:hover:text-neutral-100"
               >
                 Forgot password?
               </button>
@@ -123,7 +125,9 @@ export function SignInForm({
               type="password"
               placeholder="••••••••"
               {...register("password")}
-              className={cn(errors.password && "border-destructive")}
+              className={cn(
+                errors.password && "border-destructive dark:border-destructive",
+              )}
             />
             {errors.password && (
               <p className="text-xs text-destructive">
@@ -157,7 +161,10 @@ export function SignInForm({
 
         <p className="text-center text-sm text-muted-foreground mt-6">
           Don&apos;t have an account?{" "}
-          <Link href="/signup" className="underline">
+          <Link
+            href="/signup"
+            className="underline text-foreground dark:text-neutral-100"
+          >
             Sign up
           </Link>
         </p>

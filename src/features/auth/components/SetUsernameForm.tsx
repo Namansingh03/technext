@@ -75,8 +75,8 @@ const SetUsernameForm = () => {
   if (isPending || !session) return null;
 
   return (
-    <div className="w-full max-w-md mx-auto">
-      <div className="bg-white border border-stone-200 rounded-2xl p-8 shadow-sm">
+    <div className="w-full max-w-md mx-auto ">
+      <div className="bg-white border border-stone-200 dark:bg-neutral-900 dark:border-neutral-800 rounded-2xl p-8 shadow-sm">
         {/* Brand */}
         <div className="flex items-center gap-2 mb-8">
           <div className="w-2 h-2 rounded-full bg-foreground" />

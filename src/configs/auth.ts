@@ -1,12 +1,11 @@
 import prismaDb from "../server/db/db";
 import { betterAuth } from "better-auth";
 import resend from "../server/resend/resend";
-import CustomEmail from "@/src/shared/Emails/CustomEmailSend";
 import { emailOTP, username } from "better-auth/plugins";
 import { prismaAdapter } from "better-auth/adapters/prisma";
+import CustomEmail from "@/src/shared/Emails/CustomEmailSend";
 import VerificationEmail from "@/src/shared/Emails/VerificationEmail";
 import SendVerificationOtp from "@/src/shared/Emails/SendVerificationOtp";
-import { Roles } from "@/prisma/generated/enums";
 
 export const auth = betterAuth({
   baseURL: process.env.BETTER_AUTH_URL,
@@ -44,6 +43,9 @@ export const auth = betterAuth({
   },
   emailVerification: {
     sendVerificationEmail: async ({ user, url }) => {
+      console.log("VERIFY EMAIL");
+      console.log("USER:", user.email);
+      console.log("URL:", url);
       void resend.emails.send({
         from: "talentgate <onboarding@resend.dev>",
         to: user.email,
@@ -70,7 +72,7 @@ export const auth = betterAuth({
       role: {
         type: "string",
         required: true,
-        defaultValue: Roles,
+        defaultValue: "CANDIDATE",
         input: false,
       },
     },
