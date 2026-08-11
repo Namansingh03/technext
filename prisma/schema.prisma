@@ -22,7 +22,7 @@ model User {
   createdAt        DateTime                  @default(now())
   updatedAt        DateTime                  @updatedAt
   candidateProfile CandidateProfile?
-  memberships      CompanyMember[]
+  membership       CompanyMember?
   reviewedRequests RecruiterUpgradeRequest[] @relation("ReviewedRequests")
   upgradeRequests  RecruiterUpgradeRequest[] @relation("UpgradeRequests")
   savedJobs        SavedJob[]
@@ -108,7 +108,7 @@ model Company {
 
 model CompanyMember {
   id        String   @id @default(cuid())
-  userId    String
+  userId    String   @unique
   companyId String
   createdAt DateTime @default(now())
   company   Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)

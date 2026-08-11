@@ -1,24 +1,24 @@
 "use client";
 
-import React, { useTransition } from "react";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import { useForm } from "react-hook-form";
+import { useRouter } from "next/navigation";
+import { FormActions } from "./FormActions";
+import React, { useTransition } from "react";
+import { BrandingSection } from "./BrandingSection";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { BasicInfoSection } from "./BasicInfoSection";
+import { DescriptionSection } from "./DescriptionSection";
+import { formatDate } from "@/src/shared/utils/formatDate";
 import {
   createCompanySchema,
   createCompanyTypes,
 } from "@/src/features/company/schemas/createCompanySchema";
-import { createCompany } from "@/src/features/company/actions/createActions";
-import { formatDate } from "@/src/shared/utils/formatDate";
 import { ImageCropDialog } from "@/src/shared/components/ImageCropDialog";
-import { BrandingSection } from "./BrandingSection";
-import { BasicInfoSection } from "./BasicInfoSection";
-import { DescriptionSection } from "./DescriptionSection";
-import { FormActions } from "./FormActions";
+import { createCompany } from "@/src/features/company/actions/createActions";
 import { useCompanyImages } from "@/src/features/company/hooks/useCompanyImage";
+import { updateCompanyProfile } from "@/src/features/admin/actions/updateActions";
 import { CompanyFormType } from "@/src/features/company/types/clientTypes/createCompanyPrismaTypes";
-// import { updateCompanyProfile } from "@/src/features/admin/actions/updateActions";
 
 interface CompanyFormProps {
   companyDetails?: CompanyFormType | null;
@@ -71,34 +71,34 @@ const CompanyForm = ({ companyDetails, type = "create" }: CompanyFormProps) => {
   const onSubmit = (data: createCompanyTypes) => {
     startTransition(async () => {
       try {
-        // if (type === "update") {
-        //   if (!companyDetails?.slug) {
-        //     toast.error("Company information is missing.");
-        //     return;
-        //   }
+        if (type === "update") {
+          if (!companyDetails?.slug) {
+            toast.error("Company information is missing.");
+            return;
+          }
 
-        //   const res = await updateCompanyProfile({
-        //     data,
-        //     companySlug: companyDetails.slug,
-        //   });
+          const res = await updateCompanyProfile({
+            data,
+            companySlug: companyDetails.slug,
+          });
 
-        //   if (!res.success) {
-        //     toast.error(res.message, { description: formattedDate });
+          if (!res.success) {
+            toast.error(res.message, { description: formattedDate });
 
-        //     if (res.redirectUrl) {
-        //       router.push(res.redirectUrl);
-        //     }
+            if (res.redirectUrl) {
+              router.push(res.redirectUrl);
+            }
 
-        //     return;
-        //   }
+            return;
+          }
 
-        //   toast.success("Company profile updated successfully", {
-        //     description: formattedDate,
-        //   });
+          toast.success("Company profile updated successfully", {
+            description: formattedDate,
+          });
 
-        //   router.push(`/${companyDetails.slug}/companyProfile`);
-        //   return;
-        // }
+          router.push(`/${companyDetails.slug}/companyProfile`);
+          return;
+        }
 
         const res = await createCompany(data);
 

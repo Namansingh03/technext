@@ -1,9 +1,12 @@
-import type { Metadata } from "next";
-import { Geist, Geist_Mono, Inter } from "next/font/google";
 import "./globals.css";
+import { Toaster } from "sonner";
+import type { Metadata } from "next";
 import { cn } from "@/src/shared/utils/utils";
+import Providers from "@/src/shared/components/Providers";
+import { Geist, Geist_Mono, Inter } from "next/font/google";
+import Navbar from "@/src/shared/components/Navbar";
 
-const inter = Inter({subsets:['latin'],variable:'--font-sans'});
+const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -34,7 +37,17 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         "dark",
       )}
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="min-h-full flex flex-col">
+        <Providers>
+          <div className="min-w-full h-screen flex flex-col">
+            <Navbar />
+            <div className="min-w-full flex flex-1 overflow-hidden">
+              <main className="flex-1 overflow-auto">{children}</main>
+              <Toaster richColors position="top-right" />
+            </div>
+          </div>
+        </Providers>
+      </body>
     </html>
   );
 }
