@@ -51,6 +51,11 @@ export async function createUser(data: TellUsMoreSchemaType) {
         ...(imageUrl && {
           image: imageUrl,
         }),
+        candidateProfile: {
+          create: {
+            skills: data.skills,
+          },
+        },
       },
     });
     return createResponse(

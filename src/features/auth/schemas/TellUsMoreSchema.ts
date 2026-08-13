@@ -9,6 +9,7 @@ const TellUsMoreSchema = z.object({
     .string()
     .max(300, "Only 300 characters are allowed")
     .min(1, "Bio is required"),
+  skills: z.array(z.string()).min(5, "at least 5 skill is required"),
 });
 
 export type TellUsMoreSchemaType = z.infer<typeof TellUsMoreSchema>;

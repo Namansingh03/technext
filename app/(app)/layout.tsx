@@ -15,7 +15,7 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
     <div className="min-w-full h-screen flex flex-col items-centre">
       <Navbar name={name} image={image} />
       <div className="min-w-full flex flex-1 overflow-hidden">
-        <div className="flex-1 overflow-auto">{children}</div>
+        <div className="flex-1 overflow-auto h-screen">{children}</div>
         <Toaster richColors position="top-right" />
       </div>
     </div>
