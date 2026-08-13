@@ -2,7 +2,7 @@
 
 import z from "zod";
 import Image from "next/image";
-import React from "react";
+import React, { useState, useTransition } from "react";
 import { toast } from "sonner";
 import {
   Carousel,
@@ -16,26 +16,27 @@ import {
   TellUsMoreSchemaType,
 } from "@/src/features/auth/schemas/TellUsMoreSchema";
 import { Button } from "@/src/shared/ui/button";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { Textarea } from "@/src/shared/ui/textarea";
 import { useRouter } from "next/navigation";
-import { useState, useTransition } from "react";
 import { formatDate } from "@/src/shared/utils/formatDate";
 import { createUser } from "@/src/features/auth/actions/createAction";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2, MoveLeft, MoveRight, User2 } from "lucide-react";
 import { ImageCropDialog } from "@/src/shared/components/ImageCropDialog";
-
-const rolesVals = ["admin", "candidate"] as const;
+import StepIndicator from "@/src/shared/components/StepIndicator";
+import { LocationAutocomplete } from "../../location/components/autoCompleteLocations";
 
 const TellUsAboutYourself = ({ username }: { username: string }) => {
   const [api, setApi] = useState<CarouselApi>();
   const [current, setCurrent] = useState(0);
-  const [count, setCount] = useState(0);
+  const count = api?.scrollSnapList().length ?? 0;
   const [cropOpen, setCropOpen] = useState(false);
   const [cropImage, setCropImage] = useState<string | null>(null);
   const [avatarImagePrev, setAvatarImagePrev] = useState<string | undefined>();
+
   const [isPending, startTransition] = useTransition();
+
   const formattedDate = formatDate();
   const router = useRouter();
 
@@ -43,16 +44,15 @@ const TellUsAboutYourself = ({ username }: { username: string }) => {
     register,
     trigger,
     handleSubmit,
-    watch,
     setValue,
     formState: { errors },
+    control,
   } = useForm<TellUsMoreSchemaType>({
     resolver: zodResolver(TellUsMoreSchema),
     defaultValues: {
       image: undefined,
-      role: "candidate",
       headline: "",
-      location: "",
+      location: {},
       bio: "",
     },
     mode: "onSubmit",
@@ -61,37 +61,47 @@ const TellUsAboutYourself = ({ username }: { username: string }) => {
   React.useEffect(() => {
     if (!api) return;
 
-    setCount(api.scrollSnapList().length);
-    setCurrent(api.selectedScrollSnap() + 1);
-
-    api.on("select", () => {
+    const handleSelect = () => {
       setCurrent(api.selectedScrollSnap() + 1);
-    });
-  }, [api]);
+    };
 
-  // eslint-disable-next-line react-hooks/incompatible-library
-  const intent = watch("role");
+    api.on("select", handleSelect);
+
+    return () => {
+      api.off("select", handleSelect);
+    };
+  }, [api]);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
+
     if (!file) return;
 
     const preview = URL.createObjectURL(file);
+
     setCropImage(preview);
     setCropOpen(true);
   };
 
   const handleCropSave = (url: string, blob: Blob) => {
-    const file = new File([blob], "logo.jpg", { type: blob.type });
-    setValue("image", file, { shouldValidate: true });
+    const file = new File([blob], "avatar.jpg", {
+      type: blob.type,
+    });
+
+    setValue("image", file, {
+      shouldValidate: true,
+    });
+
     setAvatarImagePrev(url);
   };
 
   const next = async (fields?: (keyof TellUsMoreSchemaType)[]) => {
     if (fields) {
       const isValid = await trigger(fields);
+
       if (!isValid) return;
     }
+
     api?.scrollNext();
   };
 
@@ -107,45 +117,30 @@ const TellUsAboutYourself = ({ username }: { username: string }) => {
         toast.error(res.message, {
           description: formattedDate,
         });
+
         if (res.redirectUrl) {
           router.push(res.redirectUrl);
         }
+
         return;
       }
-      if (intent === "admin") {
-        toast.success(res.message, { description: "now create a company" });
-        router.push("/create-company");
-      } else {
-        toast.success(res.message, { description: formattedDate });
-        router.push(`/user/${username}/profile/create`);
-      }
+
+      toast.success(res.message, {
+        description: formattedDate,
+      });
+
+      router.push(`/${username}`);
     });
   };
 
-  const StepIndicator = () => (
-    <div className="flex items-center justify-center gap-2 py-3">
-      {Array.from({ length: count }).map((_, i) => (
-        <div
-          key={i}
-          className={`rounded-full transition-all duration-300 ${
-            i + 1 === current
-              ? "w-6 h-2 bg-zinc-900 dark:bg-zinc-100"
-              : "w-2 h-2 bg-zinc-300 dark:bg-zinc-700"
-          }`}
-        />
-      ))}
-    </div>
-  );
-
   return (
     <div className="w-full max-w-xl dark:bg-neutral-900 dark:border-neutral-800 bg-white rounded-2xl shadow-lg border border-zinc-100 overflow-hidden">
-      {/* Header */}
       <div className="px-8 pt-8 pb-5 dark:bg-neutral-900 dark:border-neutral-800 border-b border-zinc-100">
         <div className="flex items-center justify-between mb-1">
           <h1 className="text-lg dark:text-neutral-100 font-semibold tracking-tight text-zinc-900 font-serif">
             TalentGate
           </h1>
-          {/* Step counter text */}
+
           <span className="text-xs dark:text-neutral-500 text-zinc-400">
             Step {current} of {count}
           </span>
@@ -153,57 +148,29 @@ const TellUsAboutYourself = ({ username }: { username: string }) => {
         <p className="text-sm text-zinc-500 dark:text-neutral-400 mb-5">
           Tell us about yourself to personalize your experience.
         </p>
-
-        <StepIndicator />
-
+        <StepIndicator count={count} current={current} />
         <form
           onSubmit={handleSubmit(onSubmit)}
           className="flex flex-col gap-y-3"
         >
           <Carousel setApi={setApi} opts={{ watchDrag: false }}>
             <CarouselContent>
-              {/* STEP 0: ROLE */}
-              <CarouselItem>
-                <div className="flex flex-col gap-y-1 mb-3">
-                  <label className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
-                    I am
-                  </label>
-                  <p className="text-xs text-zinc-400 dark:text-zinc-500">
-                    Tell us what you are here for.
-                  </p>
-                </div>
-                <div className="w-full grid grid-cols-2 gap-2">
-                  {rolesVals.map((role, index) => (
-                    <Button
-                      key={index}
-                      type="button"
-                      variant={intent === role ? "default" : "secondary"}
-                      onClick={() => setValue("role", role)}
-                    >
-                      {role}
-                    </Button>
-                  ))}
-                </div>
-                <div className="w-full flex items-end justify-end mt-10">
-                  <Button type="button" onClick={() => next()}>
-                    next <MoveRight className="ml-1" />
-                  </Button>
-                </div>
-              </CarouselItem>
-
+              {/* Avatar */}
               <CarouselItem>
                 <div className="flex flex-col gap-y-1 mb-3">
                   <label className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
                     Avatar image
                   </label>
+
                   <p className="text-xs text-zinc-400 dark:text-zinc-500">
-                    Make you identity go unnoticed.
+                    Choose an image for your profile.
                   </p>
                 </div>
+
                 <div className="w-full flex flex-col items-center justify-center gap-y-3">
                   {avatarImagePrev ? (
                     <Image
-                      alt="avatar"
+                      alt="Avatar preview"
                       src={avatarImagePrev}
                       width={150}
                       height={150}
@@ -214,110 +181,137 @@ const TellUsAboutYourself = ({ username }: { username: string }) => {
                       <User2 className="w-full h-full text-gray-800 dark:text-gray-300" />
                     </div>
                   )}
+
                   <Input
                     type="file"
                     accept="image/*"
                     onChange={handleFileChange}
                   />
                 </div>
+
                 {errors.image && (
-                  <p className="text-red-400 dark:text-red-400">
-                    {errors.image.message}
-                  </p>
+                  <p className="text-red-400">{errors.image.message}</p>
                 )}
-                <div className="w-full flex items-end justify-between mt-10">
-                  <Button type="button" onClick={prev}>
-                    <MoveLeft className="mr-1" /> prev
-                  </Button>
+
+                <div className="w-full flex items-end justify-end mt-10">
                   <Button type="button" onClick={() => next(["image"])}>
-                    next <MoveRight className="ml-1" />
+                    Next
+                    <MoveRight className="ml-1" />
                   </Button>
                 </div>
               </CarouselItem>
 
-              {/* STEP 1: HEADLINE */}
+              {/* Specializations */}
               <CarouselItem className="flex flex-col gap-y-4">
                 <div className="flex flex-col gap-y-1">
                   <label className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
-                    What are your specializations?
+                    Headline
                   </label>
+
                   <p className="text-xs text-zinc-400 dark:text-zinc-500">
-                    What defines you best.
+                    add a headline to your profile
                   </p>
                 </div>
+
                 <Input
                   className="p-5"
-                  placeholder="Web developer, admin, CEO"
+                  placeholder="React, TypeScript, UI/UX"
                   {...register("headline")}
                 />
+
                 {errors.headline && (
                   <p className="text-red-500 dark:text-red-400 text-xs">
                     {errors.headline.message}
                   </p>
                 )}
+
                 <div className="flex flex-row justify-between w-full">
                   <Button type="button" onClick={prev}>
-                    <MoveLeft className="mr-1" /> prev
+                    <MoveLeft className="mr-1" />
+                    Prev
                   </Button>
+
                   <Button type="button" onClick={() => next(["headline"])}>
-                    next <MoveRight className="ml-1" />
+                    Next
+                    <MoveRight className="ml-1" />
                   </Button>
                 </div>
               </CarouselItem>
 
-              {/* STEP 2: LOCATION */}
+              {/* Location */}
               <CarouselItem className="flex flex-col gap-y-4">
                 <div className="flex flex-col gap-y-1">
                   <label className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
                     Location
                   </label>
+
                   <p className="text-xs text-zinc-400 dark:text-zinc-500">
-                    Your office location.
+                    Your current location.
                   </p>
                 </div>
-                <Input placeholder="city, country" {...register("location")} />
+
+                <Controller
+                  control={control}
+                  name="location"
+                  render={({ field, fieldState }) => (
+                    <LocationAutocomplete
+                      value={field.value}
+                      onSelect={field.onChange}
+                      hasError={!!fieldState.error}
+                    />
+                  )}
+                />
+
                 {errors.location && (
                   <p className="text-red-500 dark:text-red-400 text-xs">
                     {errors.location.message}
                   </p>
                 )}
+
                 <div className="flex flex-row justify-between w-full mt-4">
                   <Button type="button" onClick={prev}>
-                    <MoveLeft className="mr-1" /> prev
+                    <MoveLeft className="mr-1" />
+                    Prev
                   </Button>
-                  {/* ✅ Fix 7: validates "location" before proceeding */}
+
                   <Button type="button" onClick={() => next(["location"])}>
-                    next <MoveRight className="ml-1" />
+                    Next
+                    <MoveRight className="ml-1" />
                   </Button>
                 </div>
               </CarouselItem>
 
-              {/* STEP 3: BIO */}
+              {/* Bio */}
               <CarouselItem className="flex flex-col gap-y-4">
                 <div className="flex flex-col gap-y-1">
                   <label className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
                     Your short bio
                   </label>
+
                   <p className="text-xs text-zinc-400 dark:text-zinc-500">
-                    A one-liner that captures who you are professionally.
+                    A short description about yourself.
                   </p>
                 </div>
+
                 <Textarea
                   rows={3}
                   placeholder="Full-stack engineer who loves building products people care about."
                   className="bg-zinc-50 dark:bg-neutral-800 border-zinc-200 dark:border-neutral-700 focus:bg-white dark:focus:bg-neutral-800 resize-none transition-colors text-sm"
                   {...register("bio")}
                 />
+
                 {errors.bio && (
                   <p className="text-red-500 dark:text-red-400 text-xs">
                     {errors.bio.message}
                   </p>
                 )}
+
                 <div className="flex justify-between pt-2">
                   <Button type="button" onClick={prev}>
-                    <MoveLeft className="mr-1" /> prev
+                    <MoveLeft className="mr-1" />
+                    Prev
                   </Button>
-                  {/* ✅ Fix 8: only slide 4 has the submit button */}
+
                   <Button
                     type="submit"
                     disabled={isPending}
@@ -335,6 +329,7 @@ const TellUsAboutYourself = ({ username }: { username: string }) => {
           </Carousel>
         </form>
       </div>
+
       <ImageCropDialog
         open={cropOpen}
         onOpenChange={setCropOpen}

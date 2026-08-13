@@ -7,6 +7,23 @@ datasource db {
   provider = "postgresql"
 }
 
+model Location {
+  id          String  @id @default(cuid())
+  city        String
+  state       String?
+  country     String // ISO country name or code, your call
+  countryCode String  @db.Char(2) // "IN", "US" — for filters/flags
+  lat         Float?
+  lng         Float?
+  label       String // denormalized display string: "Meerut, UP, India"
+  users       User[]
+
+  @@unique([city, state, country])
+  @@index([countryCode])
+  @@index([lat, lng]) // pair with PostGIS or a bounding-box query for radius search
+  @@map("location")
+}
+
 model User {
   id               String            @id
   name             String
@@ -17,7 +34,8 @@ model User {
   displayUsername  String?
   bio              String?
   headline         String?
-  location         String?
+  locationId       String?
+  location         Location?         @relation(fields: [locationId], references: [id], onDelete: Cascade)
   createdAt        DateTime          @default(now())
   updatedAt        DateTime          @updatedAt
   sessions         Session[]
@@ -43,8 +61,6 @@ model CandidateProfile {
   user         User             @relation(fields: [userId], references: [id], onDelete: Cascade)
   education    Education[]
   experience   WorkExperience[]
-
-  @@index([userId])
 }
 
 model Education {
@@ -107,6 +123,7 @@ model Account {
   updatedAt             DateTime  @updatedAt
   user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 
+  @@unique([providerId, accountId])
   @@index([userId])
   @@map("account")
 }

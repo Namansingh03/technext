@@ -5,19 +5,13 @@ import { TellUsMoreSchemaType } from "../schemas/TellUsMoreSchema";
 import { getUserOrThrow } from "@/src/shared/utils/getUserOrThrow";
 import { createResponse } from "@/src/shared/utils/createResponse";
 import { uploadImage } from "@/src/server/cloudinary/uploadImage";
-import { Roles } from "@/prisma/generated/enums";
+import { LocationSchema } from "../../location/schema/locationSchema";
 
 export async function createUser(data: TellUsMoreSchemaType) {
   try {
     const user = await getUserOrThrow();
 
     let imageUrl: string | undefined;
-
-    const role = data.role.toUpperCase();
-
-    if (!Object.values(Roles).includes(role as Roles)) {
-      return createResponse(false, "Invalid role");
-    }
 
     if (data.image) {
       const uploaded = await uploadImage({
@@ -28,6 +22,24 @@ export async function createUser(data: TellUsMoreSchemaType) {
       imageUrl = uploaded.url;
     }
 
+    const parsed = LocationSchema.parse(data.location);
+
+    if (!parsed) {
+      return createResponse(false, "invalid location field");
+    }
+
+    const location = await prismaDb.location.create({
+      data: {
+        city: parsed.city!,
+        state: parsed.state!,
+        country: parsed.country!,
+        countryCode: parsed.countryCode!,
+        lat: parsed.latitude,
+        lng: parsed.longitude,
+        label: `${parsed.city}, ${parsed.state ?? ""}, ${parsed.country}`,
+      },
+    });
+
     await prismaDb.user.update({
       where: {
         id: user.id,
@@ -35,21 +47,13 @@ export async function createUser(data: TellUsMoreSchemaType) {
       data: {
         headline: data.headline,
         bio: data.bio,
-        location: data.location,
-        role: data.role.toUpperCase() as Roles,
-
+        locationId: location.id,
         ...(imageUrl && {
           image: imageUrl,
         }),
       },
-      select: {
-        email: true,
-        name: true,
-        username: true,
-        image: true,
-        role: true,
-      },
     });
+
     return createResponse(
       true,
       "User created successfully please signin one more time",

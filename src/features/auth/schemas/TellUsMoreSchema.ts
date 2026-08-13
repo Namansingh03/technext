@@ -1,10 +1,10 @@
 import { z } from "zod";
+import { LocationSchema } from "../../location/schema/locationSchema";
 
 const TellUsMoreSchema = z.object({
   image: z.instanceof(File).optional(),
-  role: z.enum(["candidate", "admin"]),
   headline: z.string().max(20).min(1, "Specialization is required").trim(),
-  location: z.string(),
+  location: LocationSchema,
   bio: z
     .string()
     .max(300, "Only 300 characters are allowed")
