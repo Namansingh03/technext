@@ -106,9 +106,7 @@ export const auth = betterAuth({
   secondaryStorage,
   session: {
     cookieCache: {
-      enabled: true,
-      maxAge: 7 * 60 * 60 * 60,
-      refreshCache: false,
+      enabled: false,
     },
     expiresIn: 60 * 60 * 24 * 30,
     updateAge: 60 * 60 * 24,

@@ -80,7 +80,7 @@ const SetUsernameForm = () => {
         {/* Brand */}
         <div className="flex items-center gap-2 mb-8">
           <div className="w-2 h-2 rounded-full bg-foreground" />
-          <span className="font-serif text-lg tracking-tight">Talentgate</span>
+          <span className="font-serif text-lg tracking-tight">TechNext</span>
         </div>
 
         <div className="mb-7">
@@ -88,7 +88,7 @@ const SetUsernameForm = () => {
             Pick a username
           </h1>
           <p className="text-sm text-muted-foreground mt-1">
-            Your unique handle on Talentgate
+            Your unique handle on TechNext
           </p>
         </div>
 
@@ -137,7 +137,7 @@ const SetUsernameForm = () => {
           )}
 
           <p className="text-xs text-muted-foreground">
-            This will be your public identity on Talentgate.
+            This will be your public identity on TechNext.
           </p>
 
           <Button

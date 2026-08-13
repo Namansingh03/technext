@@ -78,7 +78,7 @@ export function SignInForm({
       <div className="bg-white dark:bg-neutral-900 border border-stone-200 dark:border-neutral-800 rounded-2xl p-8 shadow-sm">
         <div className="flex items-center gap-2 mb-8">
           <div className="w-2 h-2 rounded-full bg-foreground" />
-          <span className="font-serif text-lg tracking-tight">Talentgate</span>
+          <span className="font-serif text-lg tracking-tight">TechNext</span>
         </div>
 
         <div className="mb-7">

@@ -79,7 +79,7 @@ export function SignupForm({
         {/* Brand */}
         <div className="flex items-center gap-2 mb-8">
           <div className="w-2 h-2 rounded-full bg-foreground" />
-          <span className="font-serif text-lg tracking-tight">Talentgate</span>
+          <span className="font-serif text-lg tracking-tight">TechNext</span>
         </div>
 
         {/* Heading */}
@@ -88,7 +88,7 @@ export function SignupForm({
             Create account
           </h1>
           <p className="text-sm text-muted-foreground mt-1">
-            Join Talentgate today
+            Join TechNext today
           </p>
         </div>
 

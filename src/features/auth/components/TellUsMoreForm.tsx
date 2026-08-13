@@ -138,7 +138,7 @@ const TellUsAboutYourself = ({ username }: { username: string }) => {
       <div className="px-8 pt-8 pb-5 dark:bg-neutral-900 dark:border-neutral-800 border-b border-zinc-100">
         <div className="flex items-center justify-between mb-1">
           <h1 className="text-lg dark:text-neutral-100 font-semibold tracking-tight text-zinc-900 font-serif">
-            TalentGate
+            TechNext
           </h1>
 
           <span className="text-xs dark:text-neutral-500 text-zinc-400">

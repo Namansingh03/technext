@@ -53,7 +53,6 @@ export async function createUser(data: TellUsMoreSchemaType) {
         }),
       },
     });
-
     return createResponse(
       true,
       "User created successfully please signin one more time",

@@ -53,7 +53,7 @@ const VerifyEmailForm = () => {
   return (
     <Card className="w-full max-w-md shadow-lg rounded-2xl">
       <CardHeader className="text-center">
-        <CardTitle className="text-2xl font-bold">Talentgate</CardTitle>
+        <CardTitle className="text-2xl font-bold">TechNext</CardTitle>
         <CardDescription className="text-base mt-2">
           Verification email sent successfully
         </CardDescription>

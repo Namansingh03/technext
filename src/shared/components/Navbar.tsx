@@ -13,17 +13,20 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/src/shared/ui/dropdown-menu";
-import { useUserStore } from "../store/useUserStore";
 
-const Navbar = () => {
+interface NavbarProps {
+  image?: string | null;
+  name: string;
+}
+
+const Navbar = ({ name, image }: NavbarProps) => {
   const router = useRouter();
-  const { user } = useUserStore();
 
   return (
     <nav className="w-full sticky h-20 top-0 z-50 bg-white dark:bg-neutral-900 flex items-center justify-between shadow-md p-5">
       <div className="flex items-center gap-x-24">
         <h1 className="capitalize text-xl font-extrabold text-indigo-900 dark:text-indigo-400">
-          Talentgate
+          TechNext
         </h1>
       </div>
       <div>
@@ -36,9 +39,9 @@ const Navbar = () => {
         <BellIcon className="text-blue-800 dark:text-blue-400 hover:text-blue-600 dark:hover:text-blue-300" />
         <DropdownMenu>
           <DropdownMenuTrigger>
-            {user?.image ? (
+            {image ? (
               <Image
-                src={user?.image}
+                src={image}
                 alt="avatarImage"
                 width={50}
                 height={50}
@@ -50,10 +53,7 @@ const Navbar = () => {
           </DropdownMenuTrigger>
           <DropdownMenuContent>
             <DropdownMenuLabel className="flex flex-col items-start justify-between gap-y-2">
-              <span className="lowercase text-sm text-gray-400 dark:text-neutral-500">
-                {user?.role.toLowerCase()}
-              </span>
-              <h1 className="text-md dark:text-neutral-100">{user?.name}</h1>
+              <h1 className="text-md dark:text-neutral-100">{name}</h1>
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuItem
