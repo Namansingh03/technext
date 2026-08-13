@@ -5,8 +5,6 @@ import StarterKit from "@tiptap/starter-kit";
 import Highlight from "@tiptap/extension-highlight";
 import Image from "@tiptap/extension-image";
 
-import "@/src/shared/components/tiptap-node/blockquote-node/blockquote-node.scss";
-
 interface RichTextProps {
   html: string;
 }

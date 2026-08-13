@@ -8,27 +8,21 @@ datasource db {
 }
 
 model User {
-  id               String                    @id
+  id               String            @id
   name             String
-  email            String                    @unique
-  emailVerified    Boolean                   @default(false)
+  email            String            @unique
+  emailVerified    Boolean           @default(false)
   image            String?
-  username         String?                   @unique
+  username         String?           @unique
   displayUsername  String?
-  role             Roles                     @default(CANDIDATE)
   bio              String?
   headline         String?
   location         String?
-  createdAt        DateTime                  @default(now())
-  updatedAt        DateTime                  @updatedAt
-  candidateProfile CandidateProfile?
-  membership       CompanyMember?
-  reviewedRequests RecruiterUpgradeRequest[] @relation("ReviewedRequests")
-  upgradeRequests  RecruiterUpgradeRequest[] @relation("UpgradeRequests")
-  savedJobs        SavedJob[]
-  accounts         Account[]
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
   sessions         Session[]
-  notifications    Notification[]
+  accounts         Account[]
+  candidateProfile CandidateProfile?
 
   @@map("user")
 }
@@ -46,7 +40,6 @@ model CandidateProfile {
   isOpenToWork Boolean          @default(true)
   createdAt    DateTime         @default(now())
   updatedAt    DateTime         @updatedAt
-  applications Application[]
   user         User             @relation(fields: [userId], references: [id], onDelete: Cascade)
   education    Education[]
   experience   WorkExperience[]
@@ -81,147 +74,6 @@ model WorkExperience {
   profile     CandidateProfile @relation(fields: [profileId], references: [id], onDelete: Cascade)
 
   @@index([profileId])
-}
-
-model Company {
-  id                       String                    @id @default(cuid())
-  name                     String
-  slug                     String                    @unique
-  logo                     String?
-  banner                   String?
-  website                  String?
-  linkedin                 String?
-  description              Json?
-  companyEmail             String?
-  industry                 String?
-  size                     CompanySize               @default(SMALL)
-  location                 String?
-  isVerified               Boolean                   @default(false)
-  createdAt                DateTime                  @default(now())
-  updatedAt                DateTime                  @updatedAt
-  members                  CompanyMember[]
-  jobs                     Job[]
-  recruiterUpgradeRequests RecruiterUpgradeRequest[]
-
-  @@index([slug])
-}
-
-model CompanyMember {
-  id        String   @id @default(cuid())
-  userId    String   @unique
-  companyId String
-  createdAt DateTime @default(now())
-  company   Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  jobs      Job[]
-
-  @@unique([userId, companyId])
-  @@index([userId])
-  @@index([companyId])
-}
-
-model RecruiterUpgradeRequest {
-  id            String        @id @default(cuid())
-  status        RequestStatus @default(PENDING)
-  userId        String
-  companyId     String
-  reviewedById  String?
-  rejectionNote String?
-  requestedAt   DateTime      @default(now())
-  reviewedAt    DateTime?
-  company       Company       @relation(fields: [companyId], references: [id], onDelete: Cascade)
-  reviewedBy    User?         @relation("ReviewedRequests", fields: [reviewedById], references: [id])
-  user          User          @relation("UpgradeRequests", fields: [userId], references: [id], onDelete: Cascade)
-
-  @@unique([userId, companyId, status])
-  @@index([userId])
-  @@index([companyId])
-}
-
-model Notification {
-  id      String @id @default(cuid())
-  userId  String
-  title   String
-  message String
-
-  type NotificationType
-
-  isRead Boolean @default(false)
-
-  createdAt DateTime @default(now())
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@index([userId, isRead])
-}
-
-model Job {
-  id               String          @id @default(cuid())
-  companyId        String
-  title            String
-  slug             String          @unique
-  description      String
-  requirements     String[]
-  responsibilities String[]
-  benefits         String[]
-  location         String
-  isRemote         Boolean         @default(false)
-  type             JobType         @default(FULL_TIME)
-  level            ExperienceLevel @default(MID)
-  category         JobCategory     @default(ENGINEERING)
-  skills           String[]
-  salaryMin        Int?
-  salaryMax        Int?
-  salaryCurrency   String          @default("USD")
-  status           JobStatus       @default(DRAFT)
-  expiresAt        DateTime?
-  viewCount        Int             @default(0)
-  createdAt        DateTime        @default(now())
-  updatedAt        DateTime        @updatedAt
-  applications     Application[]
-  company          Company         @relation(fields: [companyId], references: [id], onDelete: Cascade)
-  savedBy          SavedJob[]
-  companyMemberId  String
-  createdBy        CompanyMember   @relation(fields: [companyMemberId], references: [id])
-
-  @@index([companyId])
-  @@index([status])
-  @@index([category])
-  @@index([type])
-  @@index([level])
-  @@index([isRemote])
-  @@index([createdAt])
-  @@index([status, category, type, level])
-}
-
-model Application {
-  id          String            @id @default(cuid())
-  jobId       String
-  candidateId String
-  coverLetter String?
-  status      ApplicationStatus @default(PENDING)
-  note        String?
-  createdAt   DateTime          @default(now())
-  updatedAt   DateTime          @updatedAt
-  candidate   CandidateProfile  @relation(fields: [candidateId], references: [id], onDelete: Cascade)
-  job         Job               @relation(fields: [jobId], references: [id], onDelete: Cascade)
-
-  @@unique([jobId, candidateId])
-  @@index([jobId])
-  @@index([candidateId])
-  @@index([status])
-}
-
-model SavedJob {
-  id        String   @id @default(cuid())
-  userId    String
-  jobId     String
-  createdAt DateTime @default(now())
-  job       Job      @relation(fields: [jobId], references: [id], onDelete: Cascade)
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@unique([userId, jobId])
-  @@index([userId])
 }
 
 model Session {
@@ -269,75 +121,4 @@ model Verification {
 
   @@index([identifier])
   @@map("verification")
-}
-
-enum Roles {
-  ADMIN
-  CANDIDATE
-  RECRUITER
-}
-
-enum CompanySize {
-  STARTUP
-  SMALL
-  MEDIUM
-  LARGE
-  ENTERPRISE
-}
-
-enum RequestStatus {
-  PENDING
-  APPROVED
-  REJECTED
-}
-
-enum JobType {
-  FULL_TIME
-  PART_TIME
-  CONTRACT
-  INTERNSHIP
-  FREELANCE
-}
-
-enum ExperienceLevel {
-  INTERN
-  JUNIOR
-  MID
-  SENIOR
-  LEAD
-}
-
-enum JobCategory {
-  ENGINEERING
-  DESIGN
-  MARKETING
-  SALES
-  FINANCE
-  HR
-  OPERATIONS
-  PRODUCT
-  DATA
-  DEVOPS
-  OTHER
-}
-
-enum ApplicationStatus {
-  PENDING
-  REVIEWED
-  ACCEPTED
-  REJECTED
-}
-
-enum JobStatus {
-  DRAFT
-  ACTIVE
-  CLOSED
-  EXPIRED
-}
-
-enum NotificationType {
-  RECRUITER_REQUEST
-  APPLICATION_REQUEST
-  REQUEST_APPROVED
-  REQUEST_REJECTED
 }
