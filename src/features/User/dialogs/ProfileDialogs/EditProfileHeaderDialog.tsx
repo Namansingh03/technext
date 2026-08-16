@@ -52,15 +52,12 @@ export default function EditProfileHeaderDialog({
 }: Props) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
-
   const [avatarPreview, setAvatarPreview] = useState<string | undefined>(
     avatarImageUrl,
   );
-
   const [bannerPreview, setBannerPreview] = useState<string | undefined>(
     bannerImageUrl,
   );
-
   const [cropOpen, setCropOpen] = useState(false);
   const [cropImage, setCropImage] = useState<string | null>(null);
 

@@ -11,11 +11,11 @@ type UserProfileType = Prisma.UserGetPayload<{
     username: true;
     location: {
       select: {
+        id: true;
         city: true;
         country: true;
         countryCode: true;
         label: true;
-        id: true;
         lat: true;
         lng: true;
         state: true;

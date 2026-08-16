@@ -28,6 +28,8 @@ export function LocationAutocomplete({
   onSelect,
   hasError = false,
 }: Props) {
+  console.log(value, defaultValue);
+
   const [query, setQuery] = useState(value?.label ?? defaultValue);
 
   const [suggestions, setSuggestions] = useState<PlaceSuggestion[]>([]);

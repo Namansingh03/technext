@@ -45,6 +45,10 @@ export async function UpdateProfileHeader(data: ProfileHeaderInput) {
     let avatarImageUrl: string | undefined;
     let bannerImageUrl: string | undefined;
 
+    // --------------------------------
+    // Upload avatar
+    // --------------------------------
+
     if (data.avatar) {
       const res = await uploadImage({
         file: data.avatar,
@@ -57,6 +61,10 @@ export async function UpdateProfileHeader(data: ProfileHeaderInput) {
 
       avatarImageUrl = res.url;
     }
+
+    // --------------------------------
+    // Upload banner
+    // --------------------------------
 
     if (data.banner) {
       const res = await uploadImage({
@@ -71,46 +79,86 @@ export async function UpdateProfileHeader(data: ProfileHeaderInput) {
       bannerImageUrl = res.url;
     }
 
+    // --------------------------------
+    // Create / update location
+    // --------------------------------
+
     if (data.location) {
       const cleanedData = cleanData<locationSchemaType>(data.location);
 
-      await prismaDb.location.update({
+      const locationData = {
+        city: cleanedData.city,
+        state: cleanedData.state,
+        country: cleanedData.country,
+        countryCode: cleanedData.countryCode,
+
+        label: `${cleanedData.city}, ${cleanedData.state}, ${cleanedData.country}`,
+
+        lat: cleanedData.latitude,
+        lng: cleanedData.longitude,
+      };
+
+      await prismaDb.location.upsert({
         where: {
           id: data.location.placeId,
         },
-        data: {
-          ...cleanedData,
-          label: `${cleanedData.city}, ${cleanedData.state}, ${cleanedData.country}`,
-          lat: cleanedData.latitude,
-          lng: cleanedData.longitude,
+
+        update: locationData,
+
+        create: {
+          id: data.location.placeId,
+          ...locationData,
         },
       });
     }
 
+    // --------------------------------
+    // Update user + candidate profile
+    // --------------------------------
+
     await prismaDb.$transaction([
       prismaDb.user.update({
-        where: { id: user.id },
+        where: {
+          id: user.id,
+        },
+
         data: {
           name: data.displayName,
           headline: data.headline,
-          location: {
-            connect: {
-              id: data.location.placeId,
-            },
-          },
 
-          ...(avatarImageUrl && { image: avatarImageUrl }),
+          ...(data.location && {
+            location: {
+              connect: {
+                id: data.location.placeId,
+              },
+            },
+          }),
+
+          ...(avatarImageUrl && {
+            image: avatarImageUrl,
+          }),
         },
       }),
 
       prismaDb.candidateProfile.update({
-        where: { userId: user.id },
+        where: {
+          userId: user.id,
+        },
+
         data: {
           isOpenToWork: data.isAvailable,
-          ...(bannerImageUrl && { bannerImage: bannerImageUrl }),
+
+          ...(bannerImageUrl && {
+            bannerImage: bannerImageUrl,
+          }),
         },
       }),
     ]);
+
+    // --------------------------------
+    // Clear cached profile
+    // --------------------------------
+
     await redis.del(`user:${user.id}:profile`);
 
     return createResponse(true, "Profile updated successfully");
@@ -121,8 +169,9 @@ export async function UpdateProfileHeader(data: ProfileHeaderInput) {
       });
     }
 
-    console.error("updateProfileHeader error:", error);
-    throw new Error("Failed to update");
+    console.error("UpdateProfileHeader error:", error);
+
+    return createResponse(false, "Failed to update profile");
   }
 }
 

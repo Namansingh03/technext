@@ -19,7 +19,7 @@ export default function SkillsCard({ skills }: SkillsCardProps) {
       </p>
 
       {/* Skills List */}
-      <div className="mb-3 flex flex-wrap items-center gap-2">
+      <div className="mb-3 flex flex-wrap items-center max-h-60 overflow-scroll gap-2">
         {skills?.length ? (
           skills.map((skill, index) => (
             <span

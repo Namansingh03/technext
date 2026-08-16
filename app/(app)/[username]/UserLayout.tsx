@@ -21,7 +21,7 @@ const UserLayout = ({
     <div className="flex flex-row w-full">
       <UserSidebar username={username} image={image} name={name} />
       <SidebarInset className="">
-        <div className="h-full overflow-y-auto">{children}</div>
+        <div className="h-full fixed overflow-y-auto">{children}</div>
       </SidebarInset>
     </div>
   );

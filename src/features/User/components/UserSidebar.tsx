@@ -61,11 +61,6 @@ export function UserSidebar({ username, image, name }: CompanySidebarProps) {
       href: `/${username}/applied-jobs`,
     },
     {
-      label: "application replies",
-      icon: TextQuote,
-      href: `/${username}/application replies`,
-    },
-    {
       label: "my profile",
       icon: UserRound,
       href: `/${username}/my-profile`,

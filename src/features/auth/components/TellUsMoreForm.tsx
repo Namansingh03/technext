@@ -27,7 +27,6 @@ import { ImageCropDialog } from "@/src/shared/components/ImageCropDialog";
 import StepIndicator from "@/src/shared/components/StepIndicator";
 import { LocationAutocomplete } from "../../location/components/autoCompleteLocations";
 import SelectedSkills from "@/src/shared/components/SelectedSkills";
-import { SKILLS } from "@/src/shared/constants/values";
 
 const TellUsAboutYourself = ({ username }: { username: string }) => {
   const [api, setApi] = useState<CarouselApi>();
@@ -116,23 +115,18 @@ const TellUsAboutYourself = ({ username }: { username: string }) => {
   const onSubmit = (data: z.infer<typeof TellUsMoreSchema>) => {
     startTransition(async () => {
       const res = await createUser(data);
-
       if (!res.success) {
         toast.error(res.message, {
           description: formattedDate,
         });
-
         if (res.redirectUrl) {
           router.push(res.redirectUrl);
         }
-
         return;
       }
-
       toast.success(res.message, {
         description: formattedDate,
       });
-
       router.push(`/${username}`);
     });
   };

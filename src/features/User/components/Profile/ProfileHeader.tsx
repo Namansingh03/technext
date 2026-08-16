@@ -6,11 +6,12 @@ import { Edit } from "lucide-react";
 import { Avatar } from "@/src/shared/ui/avatar";
 import ProfileHeaderBackground from "@/src/shared/components/ImageBackground";
 import EditProfileHeaderDialog from "../../dialogs/ProfileDialogs/EditProfileHeaderDialog";
+import { LocationType } from "../../types/ProfileTypes";
 
 interface ProfileHeaderProps {
   displayName?: string | null;
   headline?: string | null;
-  location?: string | null;
+  location?: LocationType | null;
   locationId?: string | null;
   username?: string | null;
   AvatarImageUrl?: string | null;
@@ -55,7 +56,7 @@ export default function ProfileHeader({
                   />
                 ) : (
                   <div className="flex h-30 w-30 items-center justify-center rounded-full bg-neutral-100 text-xl font-semibold text-neutral-500 dark:bg-neutral-800 dark:text-neutral-400">
-                    U
+                    {displayName ? displayName[0] : "U"}
                   </div>
                 )}
               </Avatar>
@@ -87,7 +88,7 @@ export default function ProfileHeader({
               <div className="flex items-center text-sm">
                 {location && (
                   <span className="text-neutral-600 dark:text-neutral-400">
-                    {location}
+                    {location.city}
                   </span>
                 )}
                 <span className="mx-1 text-neutral-400 dark:text-neutral-600">
