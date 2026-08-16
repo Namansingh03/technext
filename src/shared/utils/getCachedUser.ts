@@ -35,6 +35,16 @@ export async function getCachedUser() {
         image: true,
         username: true,
         name: true,
+        companyMembers: {
+          select: {
+            memberRole: true,
+            company: {
+              select: {
+                slug: true,
+              },
+            },
+          },
+        },
       },
     });
 
@@ -48,6 +58,8 @@ export async function getCachedUser() {
       email: user.email,
       image: user.image,
       username: user.username,
+      memberRole: user.companyMembers?.memberRole ?? undefined,
+      companySlug: user.companyMembers?.company.slug ?? undefined,
     };
 
     await redis.set(key, JSON.stringify(data), "EX", 1 * 60 * 60);

@@ -41,6 +41,7 @@ model User {
   sessions         Session[]
   accounts         Account[]
   candidateProfile CandidateProfile?
+  companyMembers   CompanyMember?
 
   @@map("user")
 }
@@ -92,6 +93,42 @@ model WorkExperience {
   @@index([profileId])
 }
 
+model Company {
+  id           String          @id @default(cuid())
+  name         String
+  slug         String          @unique
+  logo         String?
+  banner       String?
+  website      String?
+  linkedin     String?
+  description  Json?
+  companyEmail String?
+  industry     String?
+  size         CompanySize     @default(SMALL)
+  location     String?
+  isVerified   Boolean         @default(false)
+  createdAt    DateTime        @default(now())
+  updatedAt    DateTime        @updatedAt
+  members      CompanyMember[]
+
+  @@index([slug])
+}
+
+model CompanyMember {
+  id         String      @id @default(cuid())
+  userId     String
+  companyId  String
+  createdAt  DateTime    @default(now())
+  company    Company     @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  user       User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  memberRole MemberRoles
+
+  @@unique([userId, companyId])
+  @@unique([userId])
+  @@index([userId])
+  @@index([companyId])
+}
+
 model Session {
   id        String   @id
   expiresAt DateTime
@@ -138,4 +175,18 @@ model Verification {
 
   @@index([identifier])
   @@map("verification")
+}
+
+enum CompanySize {
+  STARTUP
+  SMALL
+  MEDIUM
+  LARGE
+  ENTERPRISE
+}
+
+enum MemberRoles {
+  ADMIN
+  RECRUITER
+  INTERVIEWER
 }

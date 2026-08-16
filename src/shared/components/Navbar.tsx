@@ -13,13 +13,17 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/src/shared/ui/dropdown-menu";
+import { MemberRoles } from "@/prisma/generated/enums";
+import { Button } from "../ui/button";
 
 interface NavbarProps {
   image?: string | null;
   name: string;
+  role: MemberRoles | null;
+  companySlug: string | null;
 }
 
-const Navbar = ({ name, image }: NavbarProps) => {
+const Navbar = ({ name, image, companySlug, role }: NavbarProps) => {
   const router = useRouter();
 
   return (
@@ -55,6 +59,26 @@ const Navbar = ({ name, image }: NavbarProps) => {
             <DropdownMenuLabel className="flex flex-col items-start justify-between gap-y-2">
               <h1 className="text-md dark:text-neutral-100">{name}</h1>
             </DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem>
+              {role ? (
+                <Button
+                  className="p-0"
+                  variant={"ghost"}
+                  onClick={() => router.push(`/${role.toLowerCase()}/username`)}
+                >
+                  {companySlug}
+                </Button>
+              ) : (
+                <Button
+                  className="p-0"
+                  variant={"ghost"}
+                  onClick={() => router.push("/company/create")}
+                >
+                  create company
+                </Button>
+              )}
+            </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem
               className="text-red-600 dark:text-red-400"
