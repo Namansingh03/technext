@@ -5,7 +5,7 @@ import Link from "next/link";
 
 export default function HomeNavbar() {
   return (
-    <header className="bg-white dark:bg-neutral-600 shadow-md border-b border-neutral-300 dark:border-neutral-700">
+    <header className="bg-white min-w-full dark:bg-neutral-600 shadow-md border-b border-neutral-300 dark:border-neutral-700">
       <nav className="flex justify-between items-center max-w-7xl mx-auto px-8 h-20">
         <Link
           href="/"

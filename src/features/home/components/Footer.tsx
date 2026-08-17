@@ -2,7 +2,7 @@
 
 export default function Footer() {
   return (
-    <footer className="bg-slate-50 dark:bg-slate-950 w-full pt-20 pb-10 tonal-shift from surface-container-low">
+    <footer className="bg-slate-50 min-w-full dark:bg-slate-950 w-full pt-20 pb-10 tonal-shift from surface-container-low">
       <div className="max-w-7xl mx-auto px-8 grid grid-cols-1 md:grid-cols-2 gap-12 mb-16">
         <div>
           <a

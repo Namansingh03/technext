@@ -2,7 +2,7 @@ import Link from "next/link";
 
 export default function CTASection() {
   return (
-    <section className="py-24">
+    <section className="py-24 min-w-full">
       <div className="max-w-7xl mx-auto px-8">
         <div className="relative bg-linear-to-br from-indigo-200 via-indigo-400 to-indigo-600 dark:from-indigo-400 dark:via-indigo-600 dark:to-indigo-800 rounded-lg p-16 md:p-24 overflow-hidden text-center">
           <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10"></div>

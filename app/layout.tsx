@@ -35,7 +35,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         "dark",
       )}
     >
-      <body className="h-screen overflow-hidden">
+      <body className="">
         <Providers>{children}</Providers>
       </body>
     </html>

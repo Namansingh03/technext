@@ -110,6 +110,7 @@ model Company {
   createdAt    DateTime        @default(now())
   updatedAt    DateTime        @updatedAt
   members      CompanyMember[]
+  jobs         JobPosts[]
 
   @@index([slug])
 }
@@ -122,11 +123,49 @@ model CompanyMember {
   company    Company     @relation(fields: [companyId], references: [id], onDelete: Cascade)
   user       User        @relation(fields: [userId], references: [id], onDelete: Cascade)
   memberRole MemberRoles
+  jobPosts   JobPosts[]  @relation("PostedJobs")
 
   @@unique([userId, companyId])
   @@unique([userId])
-  @@index([userId])
   @@index([companyId])
+}
+
+model JobPosts {
+  id String @id @default(cuid())
+
+  title            String
+  slug             String   @unique
+  description      String   @db.Text
+  responsibilities String[]
+  requirements     String[]
+
+  employmentType EmploymentType
+  workMode       WorkMode
+  location       String?
+
+  minSalary Int?
+  maxSalary Int?
+  currency  String? @default("USD")
+
+  experienceLevel ExperienceLevel
+  skills          String[]
+
+  status              JobPostStatus @default(DRAFT)
+  applicationDeadline DateTime?
+
+  postedById String
+  postedBy   CompanyMember @relation("PostedJobs", fields: [postedById], references: [id], onDelete: Cascade)
+
+  companyId String
+  company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+  viewCount Int @default(0)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([status])
+  @@index([postedById])
 }
 
 model Session {
@@ -189,4 +228,37 @@ enum MemberRoles {
   ADMIN
   RECRUITER
   INTERVIEWER
+}
+
+enum EmploymentType {
+  FULL_TIME
+  PART_TIME
+  CONTRACT
+  INTERNSHIP
+}
+
+enum WorkMode {
+  REMOTE
+  HYBRID
+  ONSITE
+}
+
+enum ExperienceLevel {
+  ENTRY
+  MID
+  SENIOR
+  LEAD
+}
+
+enum JobPostStatus {
+  DRAFT
+  PUBLISHED
+  CLOSED
+  ARCHIVED
+}
+
+enum JobPostsType {
+  CANDIDATE_HIRING
+  RECRUITER_HIRING
+  INTERVIEWER_HIRING
 }

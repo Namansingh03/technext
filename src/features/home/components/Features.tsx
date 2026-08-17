@@ -2,7 +2,7 @@ import Link from "next/link";
 
 export default function HeroSection() {
   return (
-    <section className="">
+    <section className="min-w-full">
       {/* Content */}
       <div className="relative max-w-2xl mx-auto px-4 py-20 text-center">
         {/* Badge */}
