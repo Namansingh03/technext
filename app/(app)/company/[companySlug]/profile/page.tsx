@@ -1,6 +1,7 @@
 import React from "react";
 import { getCompanyDetails } from "@/src/features/company/actions/getActions";
 import CompanyPage from "@/src/features/company/components/companyPage/CompanyPage";
+import { getCachedUser } from "@/src/shared/utils/getCachedUser";
 
 async function CompanyProfile({
   params,
@@ -8,17 +9,21 @@ async function CompanyProfile({
   params: Promise<{ companySlug: string }>;
 }) {
   const { companySlug } = await params;
+  const userRes = await getCachedUser();
 
-  console.log(companySlug);
+  if (!userRes.success || !userRes.data) {
+    throw new Error(userRes.message);
+  }
 
   const res = await getCompanyDetails(companySlug);
 
   if (!res.success || !res.data) {
     throw new Error(res.message);
   }
-  console.log(res.data);
 
-  return <CompanyPage data={res.data!} />;
+  const { memberRole } = userRes.data;
+
+  return <CompanyPage data={res.data!} role={memberRole} />;
 }
 
 export default CompanyProfile;

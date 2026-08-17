@@ -13,7 +13,7 @@ export default function AboutCard({ about }: AboutCardProps) {
 
   return (
     <CardWrapper>
-      <div className="flex min-w-xl items-center justify-between mb-3">
+      <div className="flex  dark:text-neutral-300 min-w-xl items-center justify-between mb-3">
         <p className="text-xs font-medium uppercase tracking-wide text-neutral-400 dark:text-neutral-500">
           About
         </p>

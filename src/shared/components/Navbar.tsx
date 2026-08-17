@@ -15,16 +15,27 @@ import {
 } from "@/src/shared/ui/dropdown-menu";
 import { MemberRoles } from "@/prisma/generated/enums";
 import { Button } from "../ui/button";
+import { toast } from "sonner";
 
 interface NavbarProps {
   image?: string | null;
   name: string;
   role: MemberRoles | null;
   companySlug: string | null;
+  username: string | null;
 }
 
-const Navbar = ({ name, image, companySlug, role }: NavbarProps) => {
+const Navbar = ({ name, image, companySlug, role, username }: NavbarProps) => {
   const router = useRouter();
+
+  const takeToRole = () => {
+    if (!username || !role) {
+      toast.error("username not found");
+      return;
+    }
+
+    router.push(`/${role.toLowerCase()}/${username}`);
+  };
 
   return (
     <nav className="w-full sticky h-20 top-0 z-50 bg-white dark:bg-neutral-900 flex items-center justify-between shadow-md p-5">
@@ -62,13 +73,13 @@ const Navbar = ({ name, image, companySlug, role }: NavbarProps) => {
             <DropdownMenuSeparator />
             <DropdownMenuItem>
               {role ? (
-                <Button
-                  className="p-0"
-                  variant={"ghost"}
-                  onClick={() => router.push(`/${role.toLowerCase()}/username`)}
+                <span
+                  className="flex flex-col items-start justify-between p-0  cursor-pointer"
+                  onClick={takeToRole}
                 >
-                  {companySlug}
-                </Button>
+                  <p className="text-xs text-neutral-500">{role}</p>
+                  <p className="text-sm text-neutral-300 mt-1">{companySlug}</p>
+                </span>
               ) : (
                 <Button
                   className="p-0"

@@ -10,7 +10,7 @@ export const CardWrapper = ({
   return (
     <div
       className={cn(
-        "shadow-md bg-neutral-50 border border-gray-100 rounded-2xl p-8",
+        "shadow-md dark:border-neutral-800 dark:bg-neutral-900 bg-neutral-50 border border-gray-100 rounded-2xl p-8",
         className,
       )}
     >

@@ -9,20 +9,21 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
     throw new Error(res.message);
   }
 
-  const { name, image, companySlug, memberRole } = res.data;
+  const { name, image, companySlug, memberRole, username } = res.data;
 
   return (
-    <div className="min-w-full h-screen flex flex-col items-centre">
+    <main className="min-w-full h-screen flex flex-col items-center">
       <Navbar
+        username={username}
         name={name}
         image={image}
         companySlug={companySlug ?? null}
         role={memberRole ?? null}
       />
       <div className="min-w-full flex flex-1 overflow-hidden">
-        <div className="flex-1 overflow-auto h-screen">{children}</div>
+        <div className="flex-1 overflow-y-auto">{children}</div>
         <Toaster richColors position="top-right" />
       </div>
-    </div>
+    </main>
   );
 }

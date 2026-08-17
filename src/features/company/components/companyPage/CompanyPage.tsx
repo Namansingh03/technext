@@ -7,7 +7,12 @@ import CompanyInfoCard from "./CompanyInfoCard";
 import { FaRegIdBadge } from "react-icons/fa";
 import { Separator } from "@/src/shared";
 
-const CompanyPage = ({ data }: { data: CompanyType }) => {
+interface CompanyPageProps {
+  data: CompanyType;
+  role?: string;
+}
+
+const CompanyPage = ({ data, role }: CompanyPageProps) => {
   const {
     banner,
     createdAt,
@@ -44,6 +49,7 @@ const CompanyPage = ({ data }: { data: CompanyType }) => {
           name={name}
           size={size}
           website={website}
+          role={role}
         />
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2 flex flex-col gap-8">

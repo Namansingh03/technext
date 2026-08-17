@@ -19,12 +19,14 @@ import {
 
 import {
   BriefcaseBusiness,
-  BookMarked,
   Home,
   LogOutIcon,
   Logs,
   User2Icon,
   UserRound,
+  Building2,
+  StickyNotes,
+  Dock,
 } from "lucide-react";
 import { Separator } from "@/src/shared";
 
@@ -32,9 +34,15 @@ interface CompanySidebarProps {
   username: string | null;
   image?: string | null;
   name?: string | null;
+  companySlug?: string;
 }
 
-export function UserSidebar({ username, image, name }: CompanySidebarProps) {
+export function AdminSidebar({
+  username,
+  image,
+  name,
+  companySlug,
+}: CompanySidebarProps) {
   const router = useRouter();
   const pathname = usePathname();
   const { toggleSidebar, state } = useSidebar();
@@ -43,27 +51,37 @@ export function UserSidebar({ username, image, name }: CompanySidebarProps) {
     {
       label: "home",
       icon: Home,
-      href: `/${username}`,
+      href: `/admin/${username}`,
     },
     {
       label: "dashboard",
       icon: Logs,
-      href: `/${username}/dashboard`,
+      href: `/admin/${username}/dashboard`,
     },
     {
-      label: "saved jobs",
+      label: "recruiters",
       icon: BriefcaseBusiness,
-      href: `/${username}/saved-jobs`,
-    },
-    {
-      label: "applied jobs",
-      icon: BookMarked,
-      href: `/${username}/applied-jobs`,
+      href: `/admin/${username}/recruiters`,
     },
     {
       label: "my profile",
       icon: UserRound,
-      href: `/${username}/my-profile`,
+      href: `/admin/${username}/profile`,
+    },
+    {
+      label: "company profile",
+      icon: Building2,
+      href: `/company/${companySlug}/profile`,
+    },
+    {
+      label: "recruiters posts",
+      icon: StickyNotes,
+      href: `/admin/${username}/recruiters-posts`,
+    },
+    {
+      label: "recruiters applications",
+      icon: Dock,
+      href: `/admin/${username}/recruiters-applications`,
     },
   ];
 

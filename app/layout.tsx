@@ -35,10 +35,8 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         "dark",
       )}
     >
-      <body className="">
-        <Providers>
-          <main className="w-full h-screen flex flex-col">{children}</main>
-        </Providers>
+      <body className="h-screen overflow-hidden">
+        <Providers>{children}</Providers>
       </body>
     </html>
   );

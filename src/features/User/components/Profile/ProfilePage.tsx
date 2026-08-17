@@ -12,7 +12,7 @@ import AboutSkeleton from "../../Skeletons/ProfileSkeletons/AboutSkeleton";
 
 export default function ProfilePage({ user }: { user: UserProfileType }) {
   return (
-    <div className="relative min-h-full bg-neutral-300 dark:bg-neutral-950">
+    <div className=" bg-neutral-300 dark:bg-neutral-950">
       <Suspense fallback={<ProfileHeaderSkeleton />}>
         <ProfileHeader
           AvatarImageUrl={user.image}

@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { UserSidebar } from "@/src/features/User/components/UserSidebar";
+import { AdminSidebar } from "@/src/features/admin/components/AdminSidebar";
 import { SidebarInset } from "@/src/shared/ui/sidebar";
 
 interface CompanyLayoutShellProps {
@@ -9,17 +9,24 @@ interface CompanyLayoutShellProps {
   image?: string | null;
   name?: string | null;
   children: React.ReactNode;
+  companySlug?: string;
 }
 
-const UserLayout = ({
+const AdminLayout = ({
   username,
   image,
   name,
   children,
+  companySlug,
 }: CompanyLayoutShellProps) => {
   return (
     <div className="h-full flex flex-row w-full overflow-hidden">
-      <UserSidebar username={username} image={image} name={name} />
+      <AdminSidebar
+        username={username}
+        image={image}
+        name={name}
+        companySlug={companySlug}
+      />
       <SidebarInset className="flex-1 h-full overflow-y-auto">
         {children}
       </SidebarInset>
@@ -27,4 +34,4 @@ const UserLayout = ({
   );
 };
 
-export default UserLayout;
+export default AdminLayout;
