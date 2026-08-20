@@ -22,6 +22,7 @@ import EducationEditDialog from "../../dialogs/ProfileDialogs/EducationEditDialo
 
 interface EducationCardProps {
   education?: Education[];
+  isOwner: boolean;
 }
 
 function formatDateFn(date: Date) {
@@ -31,7 +32,10 @@ function formatDateFn(date: Date) {
   }).format(new Date(date));
 }
 
-export default function EducationCard({ education }: EducationCardProps) {
+export default function EducationCard({
+  education,
+  isOwner,
+}: EducationCardProps) {
   const [open, setOpen] = useState(false);
   const [selectedEducation, setSelectedEducation] =
     useState<EducationSchemaType>();
@@ -85,12 +89,14 @@ export default function EducationCard({ education }: EducationCardProps) {
             Education
           </p>
 
-          <button
-            onClick={handleAdd}
-            className="text-xs font-medium text-blue-500 transition-colors hover:underline hover:text-blue-600 dark:text-blue-400 dark:hover:text-blue-300"
-          >
-            + Add
-          </button>
+          {isOwner && (
+            <button
+              onClick={handleAdd}
+              className="text-xs font-medium text-blue-500 transition-colors hover:underline hover:text-blue-600 dark:text-blue-400 dark:hover:text-blue-300"
+            >
+              + Add
+            </button>
+          )}
         </div>
 
         <Separator className="my-4 dark:bg-neutral-800" />

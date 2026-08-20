@@ -9,12 +9,21 @@ import { UserProfileType } from "@/src/features/User/types/userTypes";
 import ProfileHeaderSkeleton from "@/src/features/User/Skeletons/ProfileSkeletons/ExperienceSkeleton";
 import ExperienceCard from "@/src/features/User/components/Profile/ExperienceCard";
 import AboutSkeleton from "../../Skeletons/ProfileSkeletons/AboutSkeleton";
+import ResumeCard from "./ResumeCard";
 
-export default function ProfilePage({ user }: { user: UserProfileType }) {
+interface ProfilePageProps {
+  user: UserProfileType;
+  username: string;
+}
+
+export default function ProfilePage({ username, user }: ProfilePageProps) {
+  const isOwner = user.username === username;
+
   return (
     <div className=" bg-neutral-300 dark:bg-neutral-950">
       <Suspense fallback={<ProfileHeaderSkeleton />}>
         <ProfileHeader
+          isOwner={isOwner}
           AvatarImageUrl={user.image}
           bannerImageUrl={user.candidateProfile?.bannerImage}
           displayName={user.name}
@@ -29,23 +38,34 @@ export default function ProfilePage({ user }: { user: UserProfileType }) {
       {/* Main Content */}
       <div className="relative z-10 -mt-10 flex w-full justify-center gap-x-10 px-10">
         <ProfileSidebar
+          isOwner={isOwner}
           skills={user.candidateProfile?.skills}
           bio={user.bio}
           githubUrl={user.candidateProfile?.githubUrl}
           linkedinUrl={user.candidateProfile?.linkedinUrl}
           portfolioUrl={user.candidateProfile?.portfolioUrl}
-          resumeUrl={user.candidateProfile?.resumeUrl}
         />
 
         <div className="flex w-full max-w-2xl items-start gap-10">
           <div className="flex flex-1 flex-col gap-5 rounded-2xl">
             <Suspense fallback={<AboutSkeleton />}>
-              <AboutCard about={user.candidateProfile?.about} />
+              <AboutCard
+                isOwner={isOwner}
+                about={user.candidateProfile?.about}
+              />
             </Suspense>
 
-            <ExperienceCard experiences={user.candidateProfile?.experience} />
+            <ResumeCard isOwner={isOwner} resumes={user.resumes ?? []} />
 
-            <EducationCard education={user.candidateProfile?.education} />
+            <ExperienceCard
+              isOwner={isOwner}
+              experiences={user.candidateProfile?.experience}
+            />
+
+            <EducationCard
+              isOwner={isOwner}
+              education={user.candidateProfile?.education}
+            />
           </div>
         </div>
       </div>

@@ -26,6 +26,18 @@ export async function getUserProfile() {
       name: true,
       headline: true,
       username: true,
+      resumes: {
+        select: {
+          createdAt: true,
+          default: true,
+          fileUrl: true,
+          id: true,
+          label: true,
+          fileName: true,
+          updatedAt: true,
+          userId: true,
+        },
+      },
       location: {
         select: {
           city: true,
@@ -45,7 +57,6 @@ export async function getUserProfile() {
           bannerImage: true,
           skills: true,
           portfolioUrl: true,
-          resumeUrl: true,
           linkedinUrl: true,
           githubUrl: true,
           experience: {

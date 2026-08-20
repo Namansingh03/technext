@@ -22,6 +22,7 @@ import ExperienceEditDialog from "../../dialogs/ProfileDialogs/ExperienceEditDia
 
 interface ExperienceCardProps {
   experiences?: WorkExperience[];
+  isOwner: boolean;
 }
 
 function formatMonthYear(date: Date) {
@@ -31,7 +32,10 @@ function formatMonthYear(date: Date) {
   }).format(new Date(date));
 }
 
-export default function ExperienceCard({ experiences }: ExperienceCardProps) {
+export default function ExperienceCard({
+  experiences,
+  isOwner,
+}: ExperienceCardProps) {
   const [open, setOpen] = useState(false);
 
   const [selectedExperience, setSelectedExperience] =
@@ -103,12 +107,14 @@ export default function ExperienceCard({ experiences }: ExperienceCardProps) {
             Work Experience
           </p>
 
-          <button
-            onClick={handleAdd}
-            className="text-xs font-medium text-blue-500 transition-colors hover:underline hover:text-blue-600 dark:text-blue-400 dark:hover:text-blue-300"
-          >
-            + Add
-          </button>
+          {isOwner && (
+            <button
+              onClick={handleAdd}
+              className="text-xs font-medium text-blue-500 transition-colors hover:underline hover:text-blue-600 dark:text-blue-400 dark:hover:text-blue-300"
+            >
+              + Add
+            </button>
+          )}
         </div>
 
         <Separator className="my-4 dark:bg-neutral-800" />

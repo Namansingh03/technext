@@ -11,10 +11,10 @@ import SkillsSkeleton from "@/src/features/User/Skeletons/ProfileSkeletons/Skill
 interface ProfileSidebarProps {
   bio?: string | null;
   skills?: string[];
-  resumeUrl?: string | null;
   portfolioUrl?: string | null;
   linkedinUrl?: string | null;
   githubUrl?: string | null;
+  isOwner: boolean;
 }
 
 export default function ProfileSidebar({
@@ -22,8 +22,8 @@ export default function ProfileSidebar({
   githubUrl,
   linkedinUrl,
   portfolioUrl,
-  resumeUrl,
   skills,
+  isOwner,
 }: ProfileSidebarProps) {
   const [dialogOpen, setDialogOpen] = useState(false);
 
@@ -33,12 +33,14 @@ export default function ProfileSidebar({
         <div>
           <h1 className="mb-5 flex justify-between text-xs font-medium uppercase tracking-wide text-neutral-400 dark:text-neutral-500">
             Personal information
-            <span
-              className="cursor-pointer text-xs font-medium text-blue-500 transition-colors hover:text-blue-600 dark:text-blue-400 dark:hover:text-blue-300"
-              onClick={() => setDialogOpen(true)}
-            >
-              Edit
-            </span>
+            {isOwner && (
+              <span
+                className="cursor-pointer text-xs font-medium text-blue-500 transition-colors hover:text-blue-600 dark:text-blue-400 dark:hover:text-blue-300"
+                onClick={() => setDialogOpen(true)}
+              >
+                Edit
+              </span>
+            )}
           </h1>
 
           <p className="text-sm leading-relaxed text-neutral-600 dark:text-neutral-300">
@@ -56,7 +58,6 @@ export default function ProfileSidebar({
           githubUrl={githubUrl}
           linkedinUrl={linkedinUrl}
           portfolioUrl={portfolioUrl}
-          resumeUrl={resumeUrl}
         />
 
         <Separator className="dark:bg-neutral-800" />

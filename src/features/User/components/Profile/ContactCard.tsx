@@ -3,20 +3,18 @@
 import Link from "next/link";
 import { useState } from "react";
 import EditContactDialog from "../../dialogs/ProfileDialogs/EditContactDialog";
-import { FaLinkedin, FaGithub, FaGlobe, FaUser } from "react-icons/fa";
+import { FaLinkedin, FaGithub, FaGlobe } from "react-icons/fa";
 
 interface ContactCardProps {
   githubUrl?: string | null;
   linkedinUrl?: string | null;
   portfolioUrl?: string | null;
-  resumeUrl?: string | null;
 }
 
 export default function ContactCard({
   githubUrl,
   linkedinUrl,
   portfolioUrl,
-  resumeUrl,
 }: ContactCardProps) {
   const links = [
     {
@@ -33,11 +31,6 @@ export default function ContactCard({
       label: "Portfolio",
       href: portfolioUrl,
       icon: <FaGlobe size={16} />,
-    },
-    {
-      label: "Resume",
-      href: resumeUrl,
-      icon: <FaUser size={16} />,
     },
   ];
 
@@ -82,7 +75,6 @@ export default function ContactCard({
         githubUrl={githubUrl}
         linkedinUrl={linkedinUrl}
         portfolioUrl={portfolioUrl}
-        resumeUrl={resumeUrl}
       />
     </div>
   );

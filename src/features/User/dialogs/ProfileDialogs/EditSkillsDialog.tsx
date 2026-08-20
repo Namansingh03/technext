@@ -14,8 +14,8 @@ import { useRouter } from "next/navigation";
 import { Button } from "@/src/shared/ui/button";
 import { useState, useTransition } from "react";
 import { formatDate } from "@/src/shared/utils/formatDate";
-import SelectedSkills from "@/src/shared/components/SelectedSkills";
 import { UpdateProfileSkills } from "@/src/features/User/actions/updateActions";
+import { StringArrayInput } from "@/src/shared/components/StringArrayInput";
 
 interface SkillsEditProps {
   skills?: string[];
@@ -59,7 +59,15 @@ const EditSkillsDialog = ({
           <DialogDescription>Add skills to your profile</DialogDescription>
         </DialogHeader>
 
-        <SelectedSkills skills={selectedSkills} onChange={setSelectedSkills} />
+        <StringArrayInput
+          placeholder="add more skills"
+          variant="badge"
+          buttonText="add"
+          value={selectedSkills}
+          onChange={(value) => {
+            setSelectedSkills(value);
+          }}
+        />
 
         <DialogFooter>
           <Button onClick={() => onOpenChange(false)} variant={"secondary"}>

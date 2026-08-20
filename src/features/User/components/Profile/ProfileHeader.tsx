@@ -17,6 +17,7 @@ interface ProfileHeaderProps {
   AvatarImageUrl?: string | null;
   bannerImageUrl?: string | null;
   isAvailable?: boolean;
+  isOwner: boolean;
 }
 
 export default function ProfileHeader({
@@ -27,6 +28,7 @@ export default function ProfileHeader({
   location,
   username,
   bannerImageUrl,
+  isOwner,
 }: ProfileHeaderProps) {
   const name = displayName ?? "Unnamed User";
   const [isOpen, setIsOpen] = useState<boolean>(false);
@@ -104,12 +106,14 @@ export default function ProfileHeader({
           </div>
         </div>
 
-        <button
-          onClick={() => setIsOpen(!isOpen)}
-          className="absolute top-8 right-8 rounded-full bg-white/90 p-2 text-neutral-700 shadow-sm transition-colors hover:bg-white hover:text-blue-500 dark:bg-neutral-900/90 dark:text-neutral-300 dark:hover:bg-neutral-900 dark:hover:text-blue-400"
-        >
-          <Edit size={18} className="cursor-pointer" />
-        </button>
+        {isOwner && (
+          <button
+            onClick={() => setIsOpen(!isOpen)}
+            className="absolute top-8 right-8 rounded-full bg-white/90 p-2 text-neutral-700 shadow-sm transition-colors hover:bg-white hover:text-blue-500 dark:bg-neutral-900/90 dark:text-neutral-300 dark:hover:bg-neutral-900 dark:hover:text-blue-400"
+          >
+            <Edit size={18} className="cursor-pointer" />
+          </button>
+        )}
 
         <EditProfileHeaderDialog
           displayName={displayName ?? ""}

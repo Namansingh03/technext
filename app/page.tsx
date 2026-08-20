@@ -18,12 +18,12 @@ export default async function Page() {
   }
 
   return (
-    <main className="flex min-w-full h-full overflow-y-auto flex-col items-center">
+    <>
       <HomeNavbar />
       <HeroSection />
       <FeaturesSection />
       <CTASection />
       <Footer />
-    </main>
+    </>
   );
 }

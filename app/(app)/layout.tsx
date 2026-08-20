@@ -22,7 +22,6 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
       />
       <div className="min-w-full flex flex-1 overflow-hidden">
         <div className="flex-1 overflow-y-auto">{children}</div>
-        <Toaster richColors position="top-right" />
       </div>
     </main>
   );

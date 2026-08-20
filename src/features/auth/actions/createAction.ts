@@ -6,6 +6,7 @@ import { getUserOrThrow } from "@/src/shared/utils/getUserOrThrow";
 import { createResponse } from "@/src/shared/utils/createResponse";
 import { uploadImage } from "@/src/server/cloudinary/uploadImage";
 import { LocationSchema } from "../../location/schema/locationSchema";
+import { uploadResumes } from "@/src/server/cloudinary/uploadResume";
 
 export async function createUser(data: TellUsMoreSchemaType) {
   try {
@@ -27,6 +28,15 @@ export async function createUser(data: TellUsMoreSchemaType) {
     if (!parsed) {
       return createResponse(false, "invalid location field");
     }
+
+    const resumes = data.resume ?? [];
+    const res = await uploadResumes(resumes, user.id);
+
+    if (!res.success || !res.data) {
+      return createResponse(false, res.message);
+    }
+
+    const uploadedResumes = res.data;
 
     const location = await prismaDb.location.create({
       data: {
@@ -51,6 +61,14 @@ export async function createUser(data: TellUsMoreSchemaType) {
         ...(imageUrl && {
           image: imageUrl,
         }),
+        resumes: {
+          create: uploadedResumes.map((resume) => ({
+            fileUrl: resume.fileUrl,
+            label: resume.label,
+            default: resume.isDefault,
+            fileName: resume.fileName,
+          })),
+        },
         candidateProfile: {
           create: {
             skills: data.skills,

@@ -6,9 +6,10 @@ import TextEditDialog from "../../dialogs/ProfileDialogs/TextEditDialogs";
 
 interface AboutCardProps {
   about?: string | null;
+  isOwner: boolean;
 }
 
-export default function AboutCard({ about }: AboutCardProps) {
+export default function AboutCard({ about, isOwner }: AboutCardProps) {
   const [dialogOpen, setDialogOpen] = useState(false);
 
   return (
@@ -18,12 +19,14 @@ export default function AboutCard({ about }: AboutCardProps) {
           About
         </p>
 
-        <button
-          onClick={() => setDialogOpen(true)}
-          className="text-xs font-medium text-blue-500 transition-colors hover:text-blue-600 dark:text-blue-400 dark:hover:text-blue-300"
-        >
-          Edit
-        </button>
+        {isOwner && (
+          <button
+            onClick={() => setDialogOpen(true)}
+            className="text-xs font-medium text-blue-500 transition-colors hover:text-blue-600 dark:text-blue-400 dark:hover:text-blue-300"
+          >
+            Edit
+          </button>
+        )}
       </div>
 
       <p className="text-sm leading-relaxed text-neutral-600 dark:text-neutral-300">

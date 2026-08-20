@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/incompatible-library */
 "use client";
 
 import z from "zod";
@@ -26,12 +27,12 @@ import { Loader2, MoveLeft, MoveRight, User2 } from "lucide-react";
 import { ImageCropDialog } from "@/src/shared/components/ImageCropDialog";
 import StepIndicator from "@/src/shared/components/StepIndicator";
 import { LocationAutocomplete } from "../../location/components/autoCompleteLocations";
-import SelectedSkills from "@/src/shared/components/SelectedSkills";
+import { StringArrayInput } from "@/src/shared/components/StringArrayInput";
+import AddResume from "@/src/shared/components/AddResume";
 
 const TellUsAboutYourself = ({ username }: { username: string }) => {
   const [api, setApi] = useState<CarouselApi>();
   const [current, setCurrent] = useState(0);
-  const [selectedSkills, setSelectedSkills] = useState<string[]>([]);
   const count = api?.scrollSnapList().length ?? 0;
   const [cropOpen, setCropOpen] = useState(false);
   const [cropImage, setCropImage] = useState<string | null>(null);
@@ -48,6 +49,7 @@ const TellUsAboutYourself = ({ username }: { username: string }) => {
     handleSubmit,
     setValue,
     formState: { errors },
+    watch,
     control,
   } = useForm<TellUsMoreSchemaType>({
     resolver: zodResolver(TellUsMoreSchema),
@@ -55,11 +57,15 @@ const TellUsAboutYourself = ({ username }: { username: string }) => {
       image: undefined,
       headline: "",
       location: {},
-      skills: selectedSkills,
+      skills: [],
       bio: "",
+      resume: [],
     },
     mode: "onSubmit",
   });
+
+  const skills = watch("skills");
+  const selectedResumes = watch("resume");
 
   React.useEffect(() => {
     if (!api) return;
@@ -213,7 +219,7 @@ const TellUsAboutYourself = ({ username }: { username: string }) => {
 
                 <Input
                   className="p-5"
-                  placeholder="React, TypeScript, UI/UX"
+                  placeholder="Web developer, admin, UI/UX designer"
                   {...register("headline")}
                 />
 
@@ -316,26 +322,74 @@ const TellUsAboutYourself = ({ username }: { username: string }) => {
                   </Button>
                 </div>
               </CarouselItem>
+
               <CarouselItem className="flex flex-col gap-y-4">
                 <div className="flex flex-col gap-y-1">
-                  <label className="text-sm font-medium text-zinc-700">
+                  <label className="text-sm dark:text-neutral-300 font-medium text-zinc-700">
                     Skills
                   </label>
-                  <p className="text-xs text-zinc-400">
-                    add skills to your profile.
+                  <p className="text-xs text-zinc-400 flex flex-col">
+                    <span className="text-neutral-600 dark:text-neutral-300">
+                      add skills to your profile.
+                    </span>
+                    <span className="text-muted-foreground dark:text-neutral-500">
+                      at least 5 skills are required{" "}
+                    </span>
                   </p>
                 </div>
                 <div className="flex flex-row gap-x-3">
-                  <SelectedSkills
-                    skills={selectedSkills || []}
-                    onChange={(vals) => {
-                      setSelectedSkills(vals);
-                      setValue("skills", vals, { shouldValidate: true });
+                  <StringArrayInput
+                    placeholder="add a skill"
+                    variant="badge"
+                    buttonText="add"
+                    value={skills ?? []}
+                    onChange={(value) => {
+                      setValue("skills", value, {
+                        shouldValidate: true,
+                        shouldDirty: true,
+                        shouldTouch: true,
+                      });
                     }}
                   />
                 </div>
                 {errors.skills && (
                   <p className="text-red-400">{errors.skills.message}</p>
+                )}
+                <div className="flex justify-between pt-2">
+                  <Button type="button" onClick={prev}>
+                    <MoveLeft className="mr-1" />
+                    Prev
+                  </Button>
+
+                  <Button type="button" onClick={() => next(["skills"])}>
+                    Next
+                    <MoveRight className="ml-1" />
+                  </Button>
+                </div>
+              </CarouselItem>
+              <CarouselItem className="flex flex-col gap-y-4">
+                <div className="flex flex-col gap-y-1">
+                  <label className="text-sm dark:text-neutral-300 font-medium text-zinc-700">
+                    Resume
+                  </label>
+                  <p className="text-xs text-zinc-400 flex flex-col">
+                    add Resumes to your profile.
+                  </p>
+                </div>
+
+                <AddResume
+                  resumes={selectedResumes ?? []}
+                  errors={errors.resume?.message}
+                  onChange={(value) => {
+                    setValue("resume", value, {
+                      shouldValidate: true,
+                      shouldDirty: true,
+                    });
+                  }}
+                />
+
+                {errors.resume && (
+                  <p className="text-red-400">{errors.resume.message}</p>
                 )}
                 <div className="flex justify-between pt-2">
                   <Button type="button" onClick={prev}>

@@ -42,15 +42,30 @@ model User {
   accounts         Account[]
   candidateProfile CandidateProfile?
   companyMembers   CompanyMember?
+  resumes          Resume[]
 
   @@map("user")
+}
+
+model Resume {
+  id       String  @id @default(cuid())
+  userId   String
+  user     User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  default  Boolean @default(false)
+  label    String
+  fileUrl  String
+  fileName String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
 }
 
 model CandidateProfile {
   id           String           @id @default(cuid())
   userId       String           @unique
   about        String?
-  resumeUrl    String?
   portfolioUrl String?
   linkedinUrl  String?
   githubUrl    String?

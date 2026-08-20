@@ -9,6 +9,7 @@ type UserProfileType = Prisma.UserGetPayload<{
     name: true;
     headline: true;
     username: true;
+    resumes: true;
     location: {
       select: {
         id: true;
@@ -28,7 +29,6 @@ type UserProfileType = Prisma.UserGetPayload<{
         skills: true;
         about: true;
         portfolioUrl: true;
-        resumeUrl: true;
         linkedinUrl: true;
         githubUrl: true;
         experience: {

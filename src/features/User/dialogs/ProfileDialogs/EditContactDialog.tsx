@@ -16,13 +16,12 @@ import { Button } from "@/src/shared/ui/button";
 import { formatDate } from "@/src/shared/utils/formatDate";
 import React, { useState, useTransition } from "react";
 import { UpdateProfileContacts } from "@/src/features/User/actions/updateActions";
-import { FaGithub, FaLinkedin, FaGlobe, FaUser } from "react-icons/fa";
+import { FaGithub, FaLinkedin, FaGlobe } from "react-icons/fa";
 
 interface Props {
   githubUrl?: string | null;
   portfolioUrl?: string | null;
   linkedinUrl?: string | null;
-  resumeUrl?: string | null;
   open: boolean;
   handleOpenChange: (open: boolean) => void;
 }
@@ -31,14 +30,12 @@ type FormDataType = {
   githubUrl: string;
   linkedinUrl: string;
   portfolioUrl: string;
-  resumeUrl: string;
 };
 
 const EditContactDialog = ({
   githubUrl,
   linkedinUrl,
   portfolioUrl,
-  resumeUrl,
   open,
   handleOpenChange,
 }: Props) => {
@@ -49,7 +46,6 @@ const EditContactDialog = ({
     githubUrl: githubUrl ?? "",
     linkedinUrl: linkedinUrl ?? "",
     portfolioUrl: portfolioUrl ?? "",
-    resumeUrl: resumeUrl ?? "",
   });
 
   const [formData, setFormData] = useState<FormDataType>(getInitialState());
@@ -72,12 +68,6 @@ const EditContactDialog = ({
       key: "portfolioUrl" as keyof FormDataType,
       icon: <FaGlobe size={16} />,
       placeholder: "https://yourportfolio.com",
-    },
-    {
-      label: "Resume",
-      key: "resumeUrl" as keyof FormDataType,
-      icon: <FaUser size={16} />,
-      placeholder: "https://drive.google.com/...",
     },
   ];
 

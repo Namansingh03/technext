@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { cn } from "@/src/shared/utils/utils";
 import Providers from "@/src/shared/components/Providers";
 import { Geist, Geist_Mono, Inter } from "next/font/google";
+import { Toaster } from "sonner";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
 
@@ -36,7 +37,12 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       )}
     >
       <body className="">
-        <Providers>{children}</Providers>
+        <Providers>
+          <main className="h-screen w-full flex flex-col items-center">
+            {children}
+            <Toaster richColors position="top-right" />
+          </main>
+        </Providers>
       </body>
     </html>
   );

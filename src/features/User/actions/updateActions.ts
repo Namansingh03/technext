@@ -13,6 +13,7 @@ import { getUserOrThrow } from "@/src/shared/utils/getUserOrThrow";
 import { Prisma } from "@/prisma/generated/browser";
 import { cleanData } from "@/src/shared/utils/cleanData";
 import { locationSchemaType } from "../../location/schema/locationSchema";
+import { getCachedUser } from "@/src/shared/utils/getCachedUser";
 
 type Input = {
   text: string;
@@ -432,5 +433,54 @@ export async function UpdateProfileContacts(data: UpdateProfileInput) {
   } catch (error) {
     console.error(error);
     return createResponse(false, "Something went wrong");
+  }
+}
+
+export async function makeDefault(resumeId: string) {
+  try {
+    const res = await getCachedUser();
+
+    if (!res.success) {
+      return createResponse(false, res.message);
+    }
+
+    const resume = await prismaDb.resume.findUnique({
+      where: {
+        id: resumeId,
+      },
+    });
+
+    if (!resume) {
+      return createResponse(false, "resume not found");
+    }
+
+    if (resume.userId !== res.data?.id) {
+      return createResponse(false, "unauthorized");
+    }
+
+    await prismaDb.$transaction(async (tx) => {
+      await tx.resume.updateMany({
+        where: {
+          userId: res.data?.id,
+          default: true,
+        },
+        data: {
+          default: false,
+        },
+      });
+
+      await tx.resume.update({
+        where: {
+          id: resumeId,
+        },
+        data: {
+          default: true,
+        },
+      });
+    });
+    return createResponse(true, "resume updated successfully");
+  } catch (error) {
+    console.log("something went wrong while updating resume", error);
+    return createResponse(false, "something went wrong while updating resume");
   }
 }
